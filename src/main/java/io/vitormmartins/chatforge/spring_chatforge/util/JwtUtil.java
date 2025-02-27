@@ -2,52 +2,54 @@ package io.vitormmartins.chatforge.spring_chatforge.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.function.Function;
 
 @Component
+@PropertySource("classpath:secrets.properties") // Load the properties file
 public class JwtUtil {
 
-  private static final String SECRET_KEY = "your-256-bit-secret-your-256-bit-secret"; // Change this!
   private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-  private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+  @Value("${jwt.secret-key:secret}")
+  private String secretKeyString;
+
+  private final byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
+  private final SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+  private final JwtParser parser = Jwts.parser().verifyWith(key).build();
+  private final JwtBuilder builder = Jwts.builder().signWith(key, SignatureAlgorithm.HS256);
 
   public String generateToken(String username) {
-    return Jwts.builder()
-            .setSubject(username)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+    return builder.claim("sub", username)
+                  .setIssuedAt(new Date())
+                  .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                  .compact();
   }
 
-  public String extractUsername(String token) {
-    return extractClaim(token, Claims::getSubject);
+  public Jws<Claims> extractAllClaims(String token) {
+    try {
+      var claims = parser.parseSignedClaims(token);
+      if (!claims.getPayload().getExpiration().before(new Date())) {
+        throw new RuntimeException("Token expired");
+      }
+      return claims;
+    } catch (JwtException e) {
+      throw new RuntimeException("Invalid token");
+    }
   }
 
-  public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-    final Claims claims = extractAllClaims(token);
-    return claimsResolver.apply(claims);
+  @PostConstruct
+  public void validateSecretKey() {
+    if (secretKeyString == null || secretKeyString.length() < 32) {
+      throw new IllegalArgumentException("Secret key is too short!");
+    }
   }
 
-  private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
-  }
-
-  public boolean validateToken(String token, String username) {
-    return (extractUsername(token).equals(username) && !isTokenExpired(token));
-  }
-
-  private boolean isTokenExpired(String token) {
-    return extractClaim(token, Claims::getExpiration).before(new Date());
-  }
 }
 
