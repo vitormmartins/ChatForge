@@ -30,21 +30,21 @@ public class JwtUtil {
     // Initialize JWT components after validation
     byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
     SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+    builder = Jwts.builder().signWith(key);
     parser = Jwts.parser().verifyWith(key).build();
-    builder = Jwts.builder().signWith(key, SignatureAlgorithm.HS256);
   }
 
   public String generateToken(String username) {
     return builder.claim("sub", username)
-                  .setIssuedAt(new Date())
-                  .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                  .issuedAt(new Date(System.currentTimeMillis()))
+                  .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                   .compact();
   }
 
   public Jws<Claims> extractAllClaims(String token) {
     try {
       var claims = parser.parseSignedClaims(token);
-      if (!claims.getPayload().getExpiration().before(new Date())) {
+      if (claims.getPayload().getExpiration().before(new Date(System.currentTimeMillis()))) {
         throw new RuntimeException("Token expired");
       }
       return claims;
