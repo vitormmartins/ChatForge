@@ -20,7 +20,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JwtFilterTest {
+public class JwtAuthenticationFilterTest {
 
   public static final int EXPIRATION_INTERVAL_MILLIS = 1000 * 60 * 60 * 2;
   @Value("${jwt.secret-key}")
@@ -33,7 +33,7 @@ public class JwtFilterTest {
   private UserDetailsService userDetailsService;
 
   @InjectMocks
-  private JwtFilter jwtFilter;
+  private JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @BeforeEach
   public void setUp() {

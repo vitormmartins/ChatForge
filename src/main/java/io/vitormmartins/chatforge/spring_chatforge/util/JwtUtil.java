@@ -3,6 +3,7 @@ package io.vitormmartins.chatforge.spring_chatforge.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,9 @@ public class JwtUtil {
   @Value("${jwt.secret-key}")
   private String secretKeyString;
 
+  @Getter
+  private SecretKey key;
+
   private JwtParser parser;
   private JwtBuilder builder;
 
@@ -29,7 +33,7 @@ public class JwtUtil {
 
     // Initialize JWT components after validation
     byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
-    SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+    key = Keys.hmacShaKeyFor(keyBytes);
     builder = Jwts.builder().signWith(key);
     parser = Jwts.parser().verifyWith(key).build();
   }

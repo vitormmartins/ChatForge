@@ -2,6 +2,7 @@ package io.vitormmartins.chatforge.spring_chatforge.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,19 +16,24 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
   private final CustomUserDetailsService customUserDetailsService;
 
   @Override
-  public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     final String name = authentication.getName();
     final String password = authentication.getCredentials().toString();
 
+    // Load user details from the database
     UserDetails userDetails = customUserDetailsService.loadUserByUsername(name);
 
+    // Validate credentials
     if (!userDetails.getUsername().equals(name) || !userDetails.getPassword().equals(password)) {
-      return null;
+      throw new BadCredentialsException("Invalid username or password");
     }
 
-    authentication.setAuthenticated(true);
-
-    return authentication;
+    // Create a new authenticated token with authorities
+    return new UsernamePasswordAuthenticationToken(
+            userDetails, // Principal
+            password,    // Credentials
+            userDetails.getAuthorities() // Authorities
+    );
   }
 
   @Override
