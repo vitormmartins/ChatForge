@@ -1,0 +1,584 @@
+{
+	"info": {
+		"_postman_id": "62132be6-2cf4-4b6b-822f-3828817bef43",
+		"name": "ChatForge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44256266"
+	},
+	"item": [
+		{
+			"name": "Get User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/get/user/V%C3%ADtor%20Matosinho",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"get",
+						"user",
+						"V%C3%ADtor%20Matosinho"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get User",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get/user/V%C3%ADtor%20Matosinho",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get",
+								"user",
+								"V%C3%ADtor%20Matosinho"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 20 Apr 2025 16:25:47 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get User Cookie auth",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MjQ5MTA2LCJleHAiOjE3NDUyNTI3MDZ9.VU4vbKbKTgv03NM_mHVNV4M-irHBFNKhgFX4jWs4jX38sSFWmalK-KUw36mC4rAErGU1wmjT7PfMXS8-h0ghlA"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/get/user/V%C3%ADtor%20Matosinho",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"get",
+						"user",
+						"V%C3%ADtor%20Matosinho"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Res Get User Cookie auth",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MjQ5MTA2LCJleHAiOjE3NDUyNTI3MDZ9.VU4vbKbKTgv03NM_mHVNV4M-irHBFNKhgFX4jWs4jX38sSFWmalK-KUw36mC4rAErGU1wmjT7PfMXS8-h0ghlA"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/get/user/V%C3%ADtor%20Matosinho",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"get",
+								"user",
+								"V%C3%ADtor%20Matosinho"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 21 Apr 2025 15:31:26 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "JWT Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extract and store the JWT token from the response",
+							"var jwtToken = pm.response.text();",
+							"pm.globals.set(\"jwtToken\", jwtToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "b",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "a",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "JWT Login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "188"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 20 Apr 2025 16:21:50 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MTY2MTEwLCJleHAiOjE3NDUxNjk3MTB9.eT9rbLMSdurvQsy_LYx1R1R3MGqfOMl2CoVtRACfvlAAZe8s6ar9HfG12t3p4ihpcJrlFirakdQF25eHzKThEA"
+				}
+			]
+		},
+		{
+			"name": "Cookie Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extract and store the JWT token from the response",
+							"var authToken = pm.response.cookies.get(0);",
+							"pm.globals.set(\"auth_token\", authToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "b",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "a",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login-cookie",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login-cookie"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Cookie Login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login-cookie",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login-cookie"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Set-Cookie",
+							"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MTc1NzIwLCJleHAiOjE3NDUxNzkzMjB9.syhGRqck_zi8nHZ5bgy3CFTqnJkW_EIRWKz_zXhKv7NcXJJ8DozS-f5aP4mpcCAe-YP__aVgRgbMYqZKtN9WJg"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "10"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 20 Apr 2025 19:02:00 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "Cookie set"
+				}
+			]
+		},
+		{
+			"name": "User Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwtToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const loginRequest = {",
+					"  url: \"http://localhost:8080/auth/login\",",
+					"  method: \"POST\",",
+					"  header: {",
+					"    \"Content-Type\": \"application/json\",",
+					"    \"Authorization\": \"Basic YTpi\"",
+					"  },",
+					"  body: {",
+					"    mode: \"raw\",",
+					"    raw: JSON.stringify({",
+					"      \"username\": \"Vítor Matosinho\",",
+					"      \"password\": \"This is my first blog comment for testing.\"",
+					"    })",
+					"  }",
+					"};",
+					"",
+					"pm.sendRequest(loginRequest, (error, response) => {",
+					"  if (error) {",
+					"    console.error(error);",
+					"  } else {",
+					"    const jwtToken = response.text(); // Get the response body as text",
+					"    console.log(jwtToken); // Log the JWT token",
+					"    pm.globals.set('jwtToken', jwtToken); // Set the JWT token as a Global Variable in Postman",
+					"  }",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

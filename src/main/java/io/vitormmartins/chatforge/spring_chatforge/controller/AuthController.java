@@ -5,6 +5,8 @@ import io.vitormmartins.chatforge.spring_chatforge.controller.dto.RegisterAuthCo
 import io.vitormmartins.chatforge.spring_chatforge.model.User;
 import io.vitormmartins.chatforge.spring_chatforge.util.JwtUtil;
 import io.vitormmartins.chatforge.spring_chatforge.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,19 +31,31 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO) {
-    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginAuthControllerDTO.username(),
-                                                                               loginAuthControllerDTO.password()));
-    String token = jwtUtil.generateToken(loginAuthControllerDTO.username());
+    String token = getToken(loginAuthControllerDTO);
     return ResponseEntity.ok(token);
+  }
+
+  @PostMapping("/login-cookie")
+  public ResponseEntity<?> loginWithCookie(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO,
+                                           HttpServletResponse response) {
+    String token = getToken(loginAuthControllerDTO);
+    response.addCookie(new Cookie("auth_token", token));
+    return ResponseEntity.ok("Cookie set");
   }
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterAuthControllerDTO registerAuthControllerDTO) {
     userRepository.save(User.builder()
-                            .username(registerAuthControllerDTO.username())
-                            .password(registerAuthControllerDTO.password())
-                            .build());
+            .username(registerAuthControllerDTO.username())
+            .password(registerAuthControllerDTO.password())
+            .build());
     return ResponseEntity.ok("User registered");
+  }
+
+  private String getToken(LoginAuthControllerDTO loginAuthControllerDTO) {
+    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginAuthControllerDTO.username(),
+            loginAuthControllerDTO.password()));
+    return jwtUtil.generateToken(loginAuthControllerDTO.username());
   }
 }
 

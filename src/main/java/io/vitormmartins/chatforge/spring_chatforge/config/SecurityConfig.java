@@ -1,9 +1,9 @@
 package io.vitormmartins.chatforge.spring_chatforge.config;
 
+import io.vitormmartins.chatforge.spring_chatforge.filter.CookieAuthenticationFilter;
 import io.vitormmartins.chatforge.spring_chatforge.filter.JwtAuthenticationFilter;
 import io.vitormmartins.chatforge.spring_chatforge.service.CustomAuthenticationProvider;
 import io.vitormmartins.chatforge.spring_chatforge.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+  private final CustomAuthenticationProvider authProvider;
+  private final JwtUtil jwtUtil;
 
-  @Autowired
-  private CustomAuthenticationProvider authProvider;
-
-  @Autowired
-  private JwtUtil jwtUtil;
+  public SecurityConfig(CustomAuthenticationProvider authProvider, JwtUtil jwtUtil) {
+    this.authProvider = authProvider;
+    this.jwtUtil = jwtUtil;
+  }
 
   @Bean
   public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -38,7 +39,8 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
             .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for stateless APIs
-            .addFilterBefore(jwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)  // Add JWT filter
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // Add JWT filter
+            .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // Add cookie filter
             .authorizeHttpRequests((authz) -> authz
                     .requestMatchers("/auth/**").permitAll()  // Allow access to /auth endpoints
                     .anyRequest().authenticated()            // Require authentication for all other requests
@@ -57,8 +59,13 @@ public class SecurityConfig {
   }
 
   @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil) {
+  public JwtAuthenticationFilter jwtAuthenticationFilter() {
     return new JwtAuthenticationFilter(jwtUtil);
+  }
+
+  @Bean
+  public CookieAuthenticationFilter cookieAuthenticationFilter() {
+    return new CookieAuthenticationFilter(jwtUtil);
   }
 
   @Bean

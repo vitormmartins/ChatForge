@@ -19,9 +19,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+  private final JwtDecoder jwtDecoder;
   private final JwtUtil jwtUtil;
 
   public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    this.jwtDecoder = NimbusJwtDecoder.withSecretKey(jwtUtil.getKey()).macAlgorithm(MacAlgorithm.HS512).build();
     this.jwtUtil = jwtUtil;
   }
 
@@ -44,28 +46,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String authHeader = request.getHeader("Authorization");
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
-//      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
-
 
     String token = authHeader.substring(7);
     try {
       var claims = jwtUtil.extractAllClaims(token);
       request.setAttribute("claims", claims);
-    } catch (Exception e) {
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    // Create a JwtAuthenticationToken and set it in the SecurityContext
-    // Initialize JWT components after validation
-    try {
-      JwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(jwtUtil.getKey()).macAlgorithm(MacAlgorithm.HS512).build();
+
       Jwt jwt = jwtDecoder.decode(token);
       JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt);
+      jwtAuthenticationToken.setAuthenticated(true);
       SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
     } catch (JwtException e) {
-      throw new RuntimeException(e);
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
     }
 
     filterChain.doFilter(request, response);
