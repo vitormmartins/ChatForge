@@ -26,7 +26,7 @@ public class JwtUtil {
 
   @PostConstruct
   public void init() {
-    // Validate secret key before using it
+    // Validate the secret key before using it
     if (secretKeyString == null || secretKeyString.length() < 32) {
       throw new IllegalArgumentException("Secret key is too short!");
     }

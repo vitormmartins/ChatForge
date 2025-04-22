@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
   private final CustomUserDetailsService customUserDetailsService;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -24,7 +26,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     UserDetails userDetails = customUserDetailsService.loadUserByUsername(name);
 
     // Validate credentials
-    if (!userDetails.getUsername().equals(name) || !userDetails.getPassword().equals(password)) {
+    if (!userDetails.getUsername().equals(name)
+        || !passwordEncoder.matches(password, userDetails.getPassword())) {
       throw new BadCredentialsException("Invalid username or password");
     }
 

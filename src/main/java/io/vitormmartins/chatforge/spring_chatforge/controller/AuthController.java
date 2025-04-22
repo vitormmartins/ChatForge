@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +23,16 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository) {
+  public AuthController(AuthenticationManager authenticationManager,
+                        JwtUtil jwtUtil,
+                        UserRepository userRepository,
+                        PasswordEncoder passwordEncoder) {
     this.authenticationManager = authenticationManager;
     this.jwtUtil = jwtUtil;
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @PostMapping("/login")
@@ -45,16 +51,17 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterAuthControllerDTO registerAuthControllerDTO) {
+    String hashedPassword = passwordEncoder.encode(registerAuthControllerDTO.password());
     userRepository.save(User.builder()
-            .username(registerAuthControllerDTO.username())
-            .password(registerAuthControllerDTO.password())
-            .build());
+                            .username(registerAuthControllerDTO.username())
+                            .password(hashedPassword)
+                            .build());
     return ResponseEntity.ok("User registered");
   }
 
   private String getToken(LoginAuthControllerDTO loginAuthControllerDTO) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginAuthControllerDTO.username(),
-            loginAuthControllerDTO.password()));
+                                                                               loginAuthControllerDTO.password()));
     return jwtUtil.generateToken(loginAuthControllerDTO.username());
   }
 }

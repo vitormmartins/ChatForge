@@ -34,14 +34,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/get/user/V%C3%ADtor%20Matosinho",
+					"raw": "{{base_url}}/get/user/Capivara",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"get",
 						"user",
-						"V%C3%ADtor%20Matosinho"
+						"Capivara"
 					]
 				}
 			},
@@ -114,6 +114,75 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+				},
+				{
+					"name": "Get User Capivara",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get/user/Capivara",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get",
+								"user",
+								"Capivara"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Apr 2025 16:08:46 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"Capivara\",\n    \"password\": \"$2a$10$7Kh8MnXf6gF2ONwMeXt4i.A4TJLkCEPL5k4PkJxFLfWNceoAg8Uh.\"\n}"
 				}
 			]
 		},
@@ -127,7 +196,7 @@
 				"header": [
 					{
 						"key": "Cookie",
-						"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MjQ5MTA2LCJleHAiOjE3NDUyNTI3MDZ9.VU4vbKbKTgv03NM_mHVNV4M-irHBFNKhgFX4jWs4jX38sSFWmalK-KUw36mC4rAErGU1wmjT7PfMXS8-h0ghlA"
+						"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MjUzNTQ3LCJleHAiOjE3NDUyNTcxNDd9.xkkh870F6UbNeBwXVALwY1KcLF3YljaGIC9_JbX5dQ7Jx-XfhflRSCgyIXd6McAxl4xkztpiUQ5Y24BqSmUVKg"
 					}
 				],
 				"url": {
@@ -502,7 +571,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}",
+					"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -522,7 +591,87 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "User Register Capivara",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "15"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Apr 2025 15:15:46 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "User registered"
+				}
+			]
 		}
 	],
 	"auth": {
@@ -552,8 +701,8 @@
 					"  body: {",
 					"    mode: \"raw\",",
 					"    raw: JSON.stringify({",
-					"      \"username\": \"Vítor Matosinho\",",
-					"      \"password\": \"This is my first blog comment for testing.\"",
+					"      \"username\": \"Capivara\",",
+					"      \"password\": \"aravipac\"",
 					"    })",
 					"  }",
 					"};",

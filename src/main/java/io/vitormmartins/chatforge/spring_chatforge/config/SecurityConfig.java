@@ -2,37 +2,32 @@ package io.vitormmartins.chatforge.spring_chatforge.config;
 
 import io.vitormmartins.chatforge.spring_chatforge.filter.CookieAuthenticationFilter;
 import io.vitormmartins.chatforge.spring_chatforge.filter.JwtAuthenticationFilter;
-import io.vitormmartins.chatforge.spring_chatforge.service.CustomAuthenticationProvider;
 import io.vitormmartins.chatforge.spring_chatforge.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  private final CustomAuthenticationProvider authProvider;
   private final JwtUtil jwtUtil;
 
-  public SecurityConfig(CustomAuthenticationProvider authProvider, JwtUtil jwtUtil) {
-    this.authProvider = authProvider;
+  public SecurityConfig(JwtUtil jwtUtil) {
     this.jwtUtil = jwtUtil;
   }
 
   @Bean
-  public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-    AuthenticationManagerBuilder authenticationManagerBuilder =
-            http.getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder.authenticationProvider(authProvider);
-    return authenticationManagerBuilder.build();
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
   @Bean
