@@ -3,9 +3,12 @@ package io.vitormmartins.chatforge.spring_chatforge.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "users")
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,12 +18,30 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Getter
-  @Column(unique = true)
+  @Column(nullable = false, unique = true)
   private String username;
 
-  @Getter
+  @Column(nullable = false)
   private String password;
 
+  @Column(unique = true)
+  private String email;
+
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 }
 
