@@ -38,6 +38,9 @@ public class SecurityConfig {
             .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // Add cookie filter
             .authorizeHttpRequests(authz -> authz
                     .requestMatchers("/auth/**").permitAll()  // Allow access to /auth endpoints
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**").permitAll()
+                    .requestMatchers("/swagger-ui.html").permitAll()
                     .anyRequest().authenticated()            // Require authentication for all other requests
             )
             .exceptionHandling(exception -> exception

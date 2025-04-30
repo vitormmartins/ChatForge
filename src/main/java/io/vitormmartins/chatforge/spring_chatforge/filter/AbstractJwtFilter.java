@@ -32,10 +32,10 @@ public abstract class AbstractJwtFilter extends OncePerRequestFilter {
             JwtAuthenticationToken authToken = new JwtAuthenticationToken(jwt);
             authToken.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            return true;
+            return false;
         } catch (InvalidTokenException | JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return false;
+            return true;
         }
     }
 }

@@ -30,7 +30,7 @@ public class CookieAuthenticationFilter extends AbstractJwtFilter {
               .findFirst();
       if (authCookie.isPresent()) {
         String token = authCookie.get().getValue();
-        if (!processToken(token, request, response)) {
+        if (processToken(token, request, response)) {
           return;
         }
       }

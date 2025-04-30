@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends AbstractJwtFilter {
       return;
     }
     String token = authHeader.substring(7);
-    if (!processToken(token, request, response)) {
+    if (processToken(token, request, response)) {
       return;
     }
     filterChain.doFilter(request, response);
