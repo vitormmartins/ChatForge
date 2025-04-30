@@ -59,7 +59,7 @@ This guide explains how to create Docker images for MySQL, MongoDB, and RabbitMQ
 To create a Docker container for MySQL, use the following command:
 
 ```shell
-sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql:latest
+sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql:8.3
 ```
 This command will:  
 - Pull the latest MySQL image from Docker Hub.

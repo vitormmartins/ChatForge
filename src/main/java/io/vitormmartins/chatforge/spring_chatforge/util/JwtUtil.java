@@ -2,6 +2,8 @@ package io.vitormmartins.chatforge.spring_chatforge.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.vitormmartins.chatforge.spring_chatforge.exception.InvalidTokenException;
+import io.vitormmartins.chatforge.spring_chatforge.exception.TokenExpiredException;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-  private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+  private static final long EXPIRATION_TIME = 1000L * 60 * 60; // 1 hour
 
   @Value("${jwt.secret-key}")
   private String secretKeyString;
@@ -49,11 +51,11 @@ public class JwtUtil {
     try {
       var claims = parser.parseSignedClaims(token);
       if (claims.getPayload().getExpiration().before(new Date(System.currentTimeMillis()))) {
-        throw new RuntimeException("Token expired");
+        throw new TokenExpiredException("Token expired");
       }
       return claims;
     } catch (JwtException e) {
-      throw new RuntimeException("Invalid token");
+      throw new InvalidTokenException("Invalid token");
     }
   }
 
@@ -65,4 +67,3 @@ public class JwtUtil {
   }
 
 }
-

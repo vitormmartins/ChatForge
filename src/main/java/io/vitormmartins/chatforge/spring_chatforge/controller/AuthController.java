@@ -36,13 +36,13 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO) {
+  public ResponseEntity<String> login(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO) {
     String token = getToken(loginAuthControllerDTO);
     return ResponseEntity.ok(token);
   }
 
   @PostMapping("/login-cookie")
-  public ResponseEntity<?> loginWithCookie(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO,
+  public ResponseEntity<String> loginWithCookie(@RequestBody LoginAuthControllerDTO loginAuthControllerDTO,
                                            HttpServletResponse response) {
     String token = getToken(loginAuthControllerDTO);
     response.addCookie(new Cookie("auth_token", token));
@@ -50,7 +50,7 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody RegisterAuthControllerDTO registerAuthControllerDTO) {
+  public ResponseEntity<String> register(@RequestBody RegisterAuthControllerDTO registerAuthControllerDTO) {
     String hashedPassword = passwordEncoder.encode(registerAuthControllerDTO.password());
     userRepository.save(User.builder()
                             .username(registerAuthControllerDTO.username())

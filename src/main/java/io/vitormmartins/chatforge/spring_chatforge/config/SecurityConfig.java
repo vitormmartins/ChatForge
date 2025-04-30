@@ -36,7 +36,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for stateless APIs
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // Add JWT filter
             .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // Add cookie filter
-            .authorizeHttpRequests((authz) -> authz
+            .authorizeHttpRequests(authz -> authz
                     .requestMatchers("/auth/**").permitAll()  // Allow access to /auth endpoints
                     .anyRequest().authenticated()            // Require authentication for all other requests
             )
