@@ -1,0 +1,49 @@
+package io.vitormmartins.chatforge.domain.user.model;
+
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+/**
+ * Value object representing a username with validation rules.
+ */
+public class Username {
+    private static final Pattern VALID_USERNAME = Pattern.compile("^[a-zA-Z0-9_]{3,20}$");
+    private final String value;
+
+    public Username(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        
+        String trimmed = value.trim();
+        if (!VALID_USERNAME.matcher(trimmed).matches()) {
+            throw new IllegalArgumentException(
+                "Username must be 3-20 characters long and contain only letters, numbers, and underscores"
+            );
+        }
+        
+        this.value = trimmed;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Username username = (Username) o;
+        return Objects.equals(value, username.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+}
