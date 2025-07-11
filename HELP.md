@@ -1,11 +1,14 @@
+
 # Read Me First
+
 The following was discovered as part of building this project:
 
 * The original package name 'io.vitormmartins.chatforge.spring-chatforge' is invalid and this project uses 'io.vitormmartins.chatforge.spring_chatforge' instead.
 
-# Getting Started
+## Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
@@ -25,6 +28,7 @@ For further reference, please consider the following sections:
 * [Spring Security](https://docs.spring.io/spring-boot/3.4.2/reference/web/spring-security.html)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
@@ -49,30 +53,32 @@ While most of the inheritance is fine, it also inherits unwanted elements like `
 To prevent this, the project POM contains empty overrides for these elements.
 If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
 
-
-# Creating Docker Images for the Project
+## Creating Docker Images for the Project
 
 This guide explains how to create Docker images for MySQL, MongoDB, and RabbitMQ for your project.
 
-## MySQL
+### MySQL
 
 To create a Docker container for MySQL, use the following command:
 
 ```shell
 sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql:8.3
 ```
+
 This command will:  
-- Pull the latest MySQL image from Docker Hub.
-- Create a container named some-mysql.
-- Set the root password to my-secret-pw.
-- Map port 3306 on your host to port 3306 in the container.
-- Run the container in detached mode.
-- You can verify the container is running with:
+
+* Pull the latest MySQL image from Docker Hub.
+* Create a container named some-mysql.
+* Set the root password to my-secret-pw.
+* Map port 3306 on your host to port 3306 in the container.
+* Run the container in detached mode.
+* You can verify the container is running with:
 
 ```shell
 sudo docker container list
 ```
-## MongoDB
+
+### MongoDB
 
 To create a Docker container for MongoDB, use the following command:
 
@@ -87,66 +93,77 @@ If you get a connection refused error, then MongoDB is not running. You can crea
 ```shell
 sudo docker run --name some-mongo -p 27017:27017 -d mongo:latest
 ```
+
 This command will:
-- Pull the latest MongoDB image from Docker Hub.
-- Create a container named some-mongo.
-- Map port 27017 on your host to port 27017 in the container.
-- Run the container in detached mode. 
- 
+
+* Pull the latest MongoDB image from Docker Hub.
+* Create a container named some-mongo.
+* Map port 27017 on your host to port 27017 in the container.
+* Run the container in detached mode.
+
 You can verify the container is running with:
 
 ```shell
 sudo docker container list
 ```
 
-## RabbitMQ
+### RabbitMQ
+
 To create a Docker container for RabbitMQ, use the following command:
 
 ```shell
 sudo docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 rabbitmq:3
 ```
+
 This command will:
-- Pull the latest RabbitMQ image from Docker Hub.
-- Create a container named some-rabbit.
-- Map port 5672 on your host to port 5672 in the container.
-- Run the container in detached mode.
-- You can verify the container is running with:
+
+* Pull the latest RabbitMQ image from Docker Hub.
+* Create a container named some-rabbit.
+* Map port 5672 on your host to port 5672 in the container.
+* Run the container in detached mode.
+* You can verify the container is running with:
 
 ```shell
 sudo docker container list
 ```
 
-## Summary
-By following these steps, you will have Docker containers running MySQL, MongoDB, and RabbitMQ, 
+### Summary
+
+By following these steps, you will have Docker containers running MySQL, MongoDB, and RabbitMQ,
 which are essential for your project's development environment.
 
-# Running the Project
+## Running the Project
 
-## Starting Docker Containers
+### Starting Docker Containers
 
 If your Docker containers for MySQL, MongoDB, and RabbitMQ have been stopped, you can start them again using the following commands:
 
 1. List all containers (including stopped ones) to see their status:
+
     ```shell
     sudo docker container list -a
     ```
 
 2. Start the RabbitMQ container:
+
     ```shell
     sudo docker container start some-rabbit
     ```
 
 3. Start the MongoDB container:
+
     ```shell
     sudo docker container start some-mongo
     ```
 
 4. If MySQL is already running on your host machine, stop the MySQL service to free up the port:
+
     ```shell
     sudo service mysql stop
     ```
 
 5. Start the MySQL container:
+
     ```shell
     sudo docker container start some-mysql
     ```

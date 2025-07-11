@@ -5,7 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * Entity representing a user.
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -33,15 +35,20 @@ public class User {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  /**
+   * Initializes createdAt and updatedAt before the entity is persisted.
+   */
   @PrePersist
   protected void onCreate() {
     createdAt = LocalDateTime.now();
     updatedAt = LocalDateTime.now();
   }
 
+  /**
+   * Updates the updatedAt timestamp before the entity is updated.
+   */
   @PreUpdate
   protected void onUpdate() {
     updatedAt = LocalDateTime.now();
   }
 }
-

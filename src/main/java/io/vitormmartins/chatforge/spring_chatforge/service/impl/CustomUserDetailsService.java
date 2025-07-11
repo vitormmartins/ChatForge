@@ -1,4 +1,4 @@
-package io.vitormmartins.chatforge.spring_chatforge.service;
+package io.vitormmartins.chatforge.spring_chatforge.service.impl;
 
 import io.vitormmartins.chatforge.spring_chatforge.model.User;
 import io.vitormmartins.chatforge.spring_chatforge.repository.UserRepository;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
- return withUsername(user.getUsername())
+    return withUsername(user.getUsername())
             .password(user.getPassword())
             .authorities("USER") // Replace it with actual roles/authorities if available
             .build();

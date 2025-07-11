@@ -16,20 +16,40 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security configuration for the application.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
   private final JwtUtil jwtUtil;
 
+  /**
+   * Constructor for SecurityConfig.
+   *
+   * @param jwtUtil the JWT utility
+   */
   public SecurityConfig(JwtUtil jwtUtil) {
     this.jwtUtil = jwtUtil;
   }
 
+  /**
+   * Creates a BCryptPasswordEncoder bean.
+   *
+   * @return a PasswordEncoder instance
+   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * Configures the security filter chain.
+   *
+   * @param http the HttpSecurity instance
+   * @return configured SecurityFilterChain
+   * @throws Exception if an error occurs during configuration
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
@@ -56,19 +76,35 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /**
+   * Creates the JwtAuthenticationFilter bean.
+   *
+   * @return a JwtAuthenticationFilter instance
+   */
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
     return new JwtAuthenticationFilter(jwtUtil);
   }
 
+  /**
+   * Creates the CookieAuthenticationFilter bean.
+   *
+   * @return a CookieAuthenticationFilter instance
+   */
   @Bean
   public CookieAuthenticationFilter cookieAuthenticationFilter() {
     return new CookieAuthenticationFilter(jwtUtil);
   }
 
+  /**
+   * Provides the AuthenticationManager bean.
+   *
+   * @param authConfig the authentication configuration
+   * @return an AuthenticationManager instance
+   * @throws Exception if an error occurs while getting the authentication manager
+   */
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
     return authConfig.getAuthenticationManager();
   }
 }
-

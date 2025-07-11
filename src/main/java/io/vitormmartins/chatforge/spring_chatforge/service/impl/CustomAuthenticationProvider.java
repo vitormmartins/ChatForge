@@ -1,4 +1,4 @@
-package io.vitormmartins.chatforge.spring_chatforge.service;
+package io.vitormmartins.chatforge.spring_chatforge.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
