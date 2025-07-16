@@ -1,6 +1,5 @@
 package io.vitormmartins.chatforge.infrastructure.security.service;
 
-import io.vitormmartins.chatforge.infrastructure.security.service.DomainUserDetailsService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +18,8 @@ public class DomainAuthenticationProvider implements AuthenticationProvider {
     private final DomainUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     
-    public DomainAuthenticationProvider(DomainUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public DomainAuthenticationProvider(DomainUserDetailsService userDetailsService,
+                                        PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }

@@ -2,6 +2,7 @@ package io.vitormmartins.chatforge.spring_chatforge;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.vitormmartins.chatforge.ChatForgeApplication;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

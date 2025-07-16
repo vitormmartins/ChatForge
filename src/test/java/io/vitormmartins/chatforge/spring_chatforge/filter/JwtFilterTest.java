@@ -1,11 +1,11 @@
-// File: src/test/java/io/vitormmartins/chatforge/spring_chatforge/filter/JwtFilterTest.java
 package io.vitormmartins.chatforge.spring_chatforge.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.vitormmartins.chatforge.spring_chatforge.util.JwtUtil;
+import io.vitormmartins.chatforge.infrastructure.security.filter.JwtAuthenticationFilter;
+import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -109,7 +109,7 @@ public class JwtFilterTest {
         String token = jwtUtil.generateToken(TEST_USERNAME);
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
 
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
 
         assertNotNull(SecurityContextHolder.getContext().getAuthentication());
         assertEquals(TEST_USERNAME, SecurityContextHolder.getContext().getAuthentication().getName());
@@ -121,7 +121,7 @@ public class JwtFilterTest {
     @DisplayName("Missing authorization header should continue filter chain")
     void doFilterInternal_missingAuthorization_shouldContinueChain() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn(null);
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
     }
@@ -130,7 +130,7 @@ public class JwtFilterTest {
     @DisplayName("Invalid token format should continue filter chain")
     void doFilterInternal_invalidTokenFormat_shouldContinueChain() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn("InvalidFormat token");
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
     }
@@ -140,7 +140,7 @@ public class JwtFilterTest {
     void doFilterInternal_invalidToken_returnsUnauthorized() throws ServletException, IOException {
         String invalidToken = "invalid.token.here";
         when(request.getHeader("Authorization")).thenReturn("Bearer " + invalidToken);
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
@@ -155,7 +155,7 @@ public class JwtFilterTest {
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
                 .compact();
         when(request.getHeader("Authorization")).thenReturn("Bearer " + expiredToken);
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
@@ -171,7 +171,6 @@ public class JwtFilterTest {
                 .signWith(Keys.hmacShaKeyFor("different_secret_key_that_is_also_32_chars".getBytes(StandardCharsets.UTF_8)))
                 .compact();
         when(request.getHeader("Authorization")).thenReturn("Bearer " + tokenWithInvalidSignature);
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
@@ -181,7 +180,7 @@ public class JwtFilterTest {
     @DisplayName("Malformed token should return unauthorized")
     void doFilterInternal_malformedToken_returnsUnauthorized() throws ServletException, IOException {
         when(request.getHeader("Authorization")).thenReturn("Bearer malformed.jwt.token");
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilter(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);

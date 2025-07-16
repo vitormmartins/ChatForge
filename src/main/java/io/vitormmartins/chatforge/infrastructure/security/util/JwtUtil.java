@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * JWT utility class for token generation and validation.
- * Moved to infrastructure layer as it's a technical concern.
+ * Moved to the infrastructure layer as it's a technical concern.
  */
 @Component
 public class JwtUtil {
