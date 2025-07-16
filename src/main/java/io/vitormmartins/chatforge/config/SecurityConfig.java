@@ -39,11 +39,11 @@ public class SecurityConfig {
             .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
-                .anyRequest().authenticated()
-            )
+                .anyRequest().authenticated())
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) ->
                     response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized"))
