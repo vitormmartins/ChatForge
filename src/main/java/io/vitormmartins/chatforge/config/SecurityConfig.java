@@ -6,6 +6,7 @@ import io.vitormmartins.chatforge.infrastructure.security.filter.JwtAuthenticati
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -16,7 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Security configuration for the application.
+ * Security configuration for the ChatForge application.
+ *
+ * <p>Configures authentication, authorization, and security filters.</p>
  */
 @Configuration
 @EnableWebSecurity
@@ -25,7 +28,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final DomainAuthenticationProvider authenticationProvider;
     
-    public SecurityConfig(JwtUtil jwtUtil, DomainAuthenticationProvider authenticationProvider) {
+    public SecurityConfig(JwtUtil jwtUtil, @Lazy DomainAuthenticationProvider authenticationProvider) {
         this.jwtUtil = jwtUtil;
         this.authenticationProvider = authenticationProvider;
     }

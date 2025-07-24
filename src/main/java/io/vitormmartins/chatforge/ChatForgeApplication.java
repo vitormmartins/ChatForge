@@ -12,7 +12,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * Main application class for ChatForge.
  * Refactored to follow Hexagonal Architecture with DDD principles.
  */
-@SpringBootApplication
+@SpringBootApplication(
+    exclude = {
+        org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class
+    }
+)
 @OpenAPIDefinition(
     info = @Info(
         title = "ChatForge API",

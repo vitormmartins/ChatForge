@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * Main controller for general user operations.
+ * The `UserController` class provides RESTful endpoints for managing user-related operations
+ * such as retrieving user information and checking for username availability. It delegates the
+ * business logic to the {@link UserApplicationService}.
  */
 @RestController
 @RequestMapping("/api/users")
@@ -16,10 +18,21 @@ public class UserController {
     
     private final UserApplicationService userApplicationService;
     
+    /**
+     * Constructs a new `UserController` with the specified `UserApplicationService`.
+     *
+     * @param userApplicationService the application service for user-related operations
+     */
     public UserController(UserApplicationService userApplicationService) {
         this.userApplicationService = userApplicationService;
     }
     
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username the username of the user to retrieve
+     * @return a `ResponseEntity` containing the `UserDto` if found, or a 404 Not Found response
+     */
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
         Optional<UserDto> user = userApplicationService.findUserByUsername(username);
@@ -27,6 +40,12 @@ public class UserController {
                   .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Checks if a username is available.
+     *
+     * @param username the username to check
+     * @return a `ResponseEntity` containing `true` if the username is available, and `false` otherwise
+     */
     @GetMapping("/check-username/{username}")
     public ResponseEntity<Boolean> checkUsernameAvailability(@PathVariable String username) {
         boolean available = userApplicationService.isUsernameAvailable(username);

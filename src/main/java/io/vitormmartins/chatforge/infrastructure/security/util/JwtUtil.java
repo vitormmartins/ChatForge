@@ -2,8 +2,8 @@ package io.vitormmartins.chatforge.infrastructure.security.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.vitormmartins.chatforge.spring_chatforge.exception.InvalidTokenException;
-import io.vitormmartins.chatforge.spring_chatforge.exception.TokenExpiredException;
+import io.vitormmartins.chatforge.infrastructure.security.exception.InvalidTokenException;
+import io.vitormmartins.chatforge.infrastructure.security.exception.TokenExpiredException;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,63 +19,63 @@ import java.util.Date;
  */
 @Component
 public class JwtUtil {
-    private static final long EXPIRATION_TIME = 1000L * 60 * 60; // 1 hour
+  private static final long EXPIRATION_TIME = 1000L * 60 * 60; // 1 hour
 
-    @Value("${jwt.secret-key}")
-    private String secretKeyString;
+  @Value("${jwt.secret-key}")
+  private String secretKeyString;
 
-    @Getter
-    private SecretKey key;
+  @Getter
+  private SecretKey key;
 
-    private JwtParser parser;
-    private JwtBuilder builder;
+  private JwtParser parser;
+  private JwtBuilder builder;
 
-    @PostConstruct
-    public void init() {
-        // Validate the secret key before using it
-        if (secretKeyString == null || secretKeyString.length() < 32) {
-            throw new IllegalArgumentException("Secret key is too short!");
-        }
-
-        // Initialize JWT components after validation
-        byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
-        key = Keys.hmacShaKeyFor(keyBytes);
-        builder = Jwts.builder().signWith(key);
-        parser = Jwts.parser().verifyWith(key).build();
+  @PostConstruct
+  public void init() {
+    // Validate the secret key before using it
+    if (secretKeyString == null || secretKeyString.length() < 32) {
+      throw new IllegalArgumentException("Secret key is too short!");
     }
 
-    public String generateToken(String username) {
-        return builder.claim("sub", username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .compact();
-    }
+    // Initialize JWT components after validation
+    byte[] keyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
+    key = Keys.hmacShaKeyFor(keyBytes);
+    builder = Jwts.builder().signWith(key);
+    parser = Jwts.parser().verifyWith(key).build();
+  }
 
-    public Jws<Claims> extractAllClaims(String token) {
-        try {
-            return parser.parseSignedClaims(token);
-        } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException("JWT token has expired");
-        } catch (JwtException e) {
-            throw new InvalidTokenException("Invalid JWT token");
-        }
-    }
+  public String generateToken(String username) {
+    return builder.claim("sub", username)
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .compact();
+  }
 
-    public String extractUsername(String token) {
-        return extractAllClaims(token).getPayload().getSubject();
+  public Jws<Claims> extractAllClaims(String token) {
+    try {
+      return parser.parseSignedClaims(token);
+    } catch (ExpiredJwtException e) {
+      throw new TokenExpiredException("JWT token has expired");
+    } catch (JwtException e) {
+      throw new InvalidTokenException("Invalid JWT token");
     }
+  }
 
-    public boolean isTokenExpired(String token) {
-        try {
-            extractAllClaims(token);
-            return false;
-        } catch (TokenExpiredException e) {
-            return true;
-        }
-    }
+  public String extractUsername(String token) {
+    return extractAllClaims(token).getPayload().getSubject();
+  }
 
-    public boolean validateToken(String token, String username) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+  public boolean isTokenExpired(String token) {
+    try {
+      extractAllClaims(token);
+      return false;
+    } catch (TokenExpiredException e) {
+      return true;
     }
+  }
+
+  public boolean validateToken(String token, String username) {
+    final String extractedUsername = extractUsername(token);
+    return (extractedUsername.equals(username) && !isTokenExpired(token));
+  }
 }

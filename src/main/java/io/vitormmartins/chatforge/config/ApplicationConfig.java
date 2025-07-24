@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
  * Wires domain services and application services.
  */
 @Configuration
+/**
+ * Application-wide configuration beans.
+ */
 public class ApplicationConfig {
     
     @Bean

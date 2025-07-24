@@ -1,6 +1,7 @@
 package io.vitormmartins.chatforge.infrastructure.security.filter;
 
-import io.vitormmartins.chatforge.spring_chatforge.exception.InvalidTokenException;
+import io.vitormmartins.chatforge.infrastructure.security.exception.InvalidTokenException;
+import io.vitormmartins.chatforge.infrastructure.security.exception.TokenExpiredException;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Abstract base class for JWT authentication filters.
- * Moved to infrastructure layer as it's a technical concern.
+ * Moved to the infrastructure layer as it's a technical concern.
  */
 public abstract class AbstractJwtFilter extends OncePerRequestFilter {
     protected final JwtUtil jwtUtil;
@@ -37,7 +38,7 @@ public abstract class AbstractJwtFilter extends OncePerRequestFilter {
             authToken.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authToken);
             return false;
-        } catch (InvalidTokenException | JwtException e) {
+        } catch (InvalidTokenException | TokenExpiredException | JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return true;
         }

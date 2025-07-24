@@ -1,4 +1,4 @@
-package io.vitormmartins.chatforge.spring_chatforge.exception;
+package io.vitormmartins.chatforge.infrastructure.security.exception;
 
 public class InvalidTokenException extends RuntimeException {
   public InvalidTokenException(String message) {
