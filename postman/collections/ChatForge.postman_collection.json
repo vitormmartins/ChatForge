@@ -34,100 +34,31 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/get/user/Capivara",
+					"raw": "{{base_url}}/api/users/Capivara",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"get",
-						"user",
+						"api",
+						"users",
 						"Capivara"
 					]
 				}
 			},
 			"response": [
 				{
-					"name": "Get User",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/get/user/V%C3%ADtor%20Matosinho",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"get",
-								"user",
-								"V%C3%ADtor%20Matosinho"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "X-Content-Type-Options",
-							"value": "nosniff"
-						},
-						{
-							"key": "X-XSS-Protection",
-							"value": "0"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, no-store, max-age=0, must-revalidate"
-						},
-						{
-							"key": "Pragma",
-							"value": "no-cache"
-						},
-						{
-							"key": "Expires",
-							"value": "0"
-						},
-						{
-							"key": "X-Frame-Options",
-							"value": "DENY"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 20 Apr 2025 16:25:47 GMT"
-						},
-						{
-							"key": "Keep-Alive",
-							"value": "timeout=60"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
-				},
-				{
 					"name": "Get User Capivara",
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/get/user/Capivara",
+							"raw": "{{base_url}}/api/users/Capivara",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"get",
-								"user",
+								"api",
+								"users",
 								"Capivara"
 							]
 						}
@@ -170,7 +101,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Tue, 22 Apr 2025 16:08:46 GMT"
+							"value": "Thu, 24 Jul 2025 02:35:19 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -182,7 +113,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"username\": \"Capivara\",\n    \"password\": \"$2a$10$7Kh8MnXf6gF2ONwMeXt4i.A4TJLkCEPL5k4PkJxFLfWNceoAg8Uh.\"\n}"
+					"body": "{\n    \"id\": 1,\n    \"username\": \"Capivara\",\n    \"email\": \"capivara@example.com\",\n    \"createdAt\": \"2025-07-23T21:28:55\"\n}"
 				}
 			]
 		},
@@ -200,97 +131,20 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/get/user/V%C3%ADtor%20Matosinho",
+					"raw": "http://localhost:8080/api/users/Capivara",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"get",
-						"user",
-						"V%C3%ADtor%20Matosinho"
+						"api",
+						"users",
+						"Capivara"
 					]
 				}
 			},
-			"response": [
-				{
-					"name": "Res Get User Cookie auth",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Cookie",
-								"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MjQ5MTA2LCJleHAiOjE3NDUyNTI3MDZ9.VU4vbKbKTgv03NM_mHVNV4M-irHBFNKhgFX4jWs4jX38sSFWmalK-KUw36mC4rAErGU1wmjT7PfMXS8-h0ghlA"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/get/user/V%C3%ADtor%20Matosinho",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"get",
-								"user",
-								"V%C3%ADtor%20Matosinho"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "X-Content-Type-Options",
-							"value": "nosniff"
-						},
-						{
-							"key": "X-XSS-Protection",
-							"value": "0"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, no-store, max-age=0, must-revalidate"
-						},
-						{
-							"key": "Pragma",
-							"value": "no-cache"
-						},
-						{
-							"key": "Expires",
-							"value": "0"
-						},
-						{
-							"key": "X-Frame-Options",
-							"value": "DENY"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Transfer-Encoding",
-							"value": "chunked"
-						},
-						{
-							"key": "Date",
-							"value": "Mon, 21 Apr 2025 15:31:26 GMT"
-						},
-						{
-							"key": "Keep-Alive",
-							"value": "timeout=60"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
-				}
-			]
+			"response": []
 		},
 		{
 			"name": "JWT Login",
@@ -333,7 +187,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+					"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/auth/login",
@@ -348,7 +202,7 @@
 			},
 			"response": [
 				{
-					"name": "JWT Login",
+					"name": "JWT Login Capivara",
 					"originalRequest": {
 						"method": "POST",
 						"header": [
@@ -359,7 +213,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+							"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/login",
@@ -406,11 +260,11 @@
 						},
 						{
 							"key": "Content-Length",
-							"value": "188"
+							"value": "178"
 						},
 						{
 							"key": "Date",
-							"value": "Sun, 20 Apr 2025 16:21:50 GMT"
+							"value": "Fri, 02 May 2025 16:02:02 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -422,7 +276,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MTY2MTEwLCJleHAiOjE3NDUxNjk3MTB9.eT9rbLMSdurvQsy_LYx1R1R3MGqfOMl2CoVtRACfvlAAZe8s6ar9HfG12t3p4ihpcJrlFirakdQF25eHzKThEA"
+					"body": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc0NjIwMTcyMiwiZXhwIjoxNzQ2MjA1MzIyfQ.ZONTCsB0tourVG7YS95pDSqK6Gzxe4Vxj_7GIKVILhtk4k6QxGQcjqk98xb34pp5HduxBHCAtBetjsrjCEDijw"
 				}
 			]
 		},
@@ -467,7 +321,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+					"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/auth/login-cookie",
@@ -482,7 +336,7 @@
 			},
 			"response": [
 				{
-					"name": "Cookie Login",
+					"name": "Cookie Login Capivara",
 					"originalRequest": {
 						"method": "POST",
 						"header": [
@@ -493,7 +347,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}"
+							"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/login-cookie",
@@ -512,7 +366,7 @@
 					"header": [
 						{
 							"key": "Set-Cookie",
-							"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJWw610b3IgTWF0b3NpbmhvIiwiaWF0IjoxNzQ1MTc1NzIwLCJleHAiOjE3NDUxNzkzMjB9.syhGRqck_zi8nHZ5bgy3CFTqnJkW_EIRWKz_zXhKv7NcXJJ8DozS-f5aP4mpcCAe-YP__aVgRgbMYqZKtN9WJg"
+							"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc0NjIwMTY5MywiZXhwIjoxNzQ2MjA1MjkzfQ.GFtxERbb8ucx5FNuOo-ji_xXYzfi33xxGcAHBjw1yWtxyJtZ02z0Y2tk20gdpZ5zfppXYB4GJ-LbE4VksX0fEg"
 						},
 						{
 							"key": "X-Content-Type-Options",
@@ -548,7 +402,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Sun, 20 Apr 2025 19:02:00 GMT"
+							"value": "Fri, 02 May 2025 16:01:33 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -571,7 +425,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\"\n}",
+					"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\",\n    \"email\": \"capivara@example.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -579,12 +433,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/auth/register",
-					"protocol": "http",
+					"raw": "{{base_url}}/auth/register",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"auth",
 						"register"
@@ -599,7 +451,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"Vítor Matosinho\",\n    \"password\": \"This is my first blog comment for testing.\"\n}",
+							"raw": "{\n    \"username\": \"Capivara\",\n    \"password\": \"aravipac\",\n    \"email\": \"capivara@example.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -657,7 +509,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Tue, 22 Apr 2025 15:15:46 GMT"
+							"value": "Fri, 02 May 2025 15:34:50 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -670,6 +522,117 @@
 					],
 					"cookie": [],
 					"body": "User registered"
+				}
+			]
+		},
+		{
+			"name": "Actuator Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Username",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/users/check-username/Capivara",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"check-username",
+						"Capivara"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Check Username Capivara",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/check-username/Capivara",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"check-username",
+								"Capivara"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 24 Jul 2025 02:39:36 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "false"
 				}
 			]
 		}
@@ -691,31 +654,7 @@
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
-					"const loginRequest = {",
-					"  url: \"http://localhost:8080/auth/login\",",
-					"  method: \"POST\",",
-					"  header: {",
-					"    \"Content-Type\": \"application/json\",",
-					"    \"Authorization\": \"Basic YTpi\"",
-					"  },",
-					"  body: {",
-					"    mode: \"raw\",",
-					"    raw: JSON.stringify({",
-					"      \"username\": \"Capivara\",",
-					"      \"password\": \"aravipac\"",
-					"    })",
-					"  }",
-					"};",
-					"",
-					"pm.sendRequest(loginRequest, (error, response) => {",
-					"  if (error) {",
-					"    console.error(error);",
-					"  } else {",
-					"    const jwtToken = response.text(); // Get the response body as text",
-					"    console.log(jwtToken); // Log the JWT token",
-					"    pm.globals.set('jwtToken', jwtToken); // Set the JWT token as a Global Variable in Postman",
-					"  }",
-					"});"
+					""
 				]
 			}
 		},
