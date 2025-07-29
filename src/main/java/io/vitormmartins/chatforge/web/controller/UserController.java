@@ -13,7 +13,7 @@ import java.util.Optional;
  * business logic to the {@link UserApplicationService}.
  */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/v1/api/users")
 public class UserController {
     
     private final UserApplicationService userApplicationService;

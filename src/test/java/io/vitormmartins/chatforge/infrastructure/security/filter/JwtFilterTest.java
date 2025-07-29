@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -35,8 +36,9 @@ class JwtFilterTest {
 
   private static final String SECRET_KEY = "OBslwXQbeJPMIq2bNCmAADfBF36Tda8BhRrXebM8zG2P2ksGSCol9f9bDZpVH6gn";
   private static final String TEST_USERNAME = "testuser";
+  public static final String KEY_THAT_IS_ALSO_32_CHARS = "different_secret_key_that_is_also_32_chars";
 
-    private JwtUtil jwtUtil;
+  private JwtUtil jwtUtil;
   private JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Mock
@@ -151,11 +153,11 @@ class JwtFilterTest {
   void doFilterInternal_expiredToken_returnsUnauthorized() throws ServletException, IOException {
     // Create an expired token
     String expiredToken = Jwts.builder()
-            .subject(TEST_USERNAME)
-            .issuedAt(Date.from(Instant.now().minusSeconds(7200))) // 2 hours ago
-            .expiration(Date.from(Instant.now().minusSeconds(3600))) // 1 hour ago
-            .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
-            .compact();
+                              .subject(TEST_USERNAME)
+                              .issuedAt(Date.from(Instant.now().minusSeconds(7200))) // 2 hours ago
+                              .expiration(Date.from(Instant.now().minusSeconds(3600))) // 1 hour ago
+                              .signWith(getSecretKey(SECRET_KEY))
+                              .compact();
 
     when(request.getHeader("Authorization")).thenReturn("Bearer " + expiredToken);
 
@@ -168,13 +170,13 @@ class JwtFilterTest {
   @Test
   @DisplayName("Token with invalid signature should return unauthorized")
   void doFilterInternal_invalidSignature_returnsUnauthorized() throws ServletException, IOException {
-    // Create token with different secret key
-    String tokenWithInvalidSignature = Jwts.builder()
-            .subject(TEST_USERNAME)
-            .issuedAt(Date.from(Instant.now()))
-            .expiration(Date.from(Instant.now().plusSeconds(3600)))
-            .signWith(Keys.hmacShaKeyFor("different_secret_key_that_is_also_32_chars".getBytes(StandardCharsets.UTF_8)))
-            .compact();
+    // Create token with a different secret key
+    String tokenWithInvalidSignature =  Jwts.builder()
+                                            .subject(TEST_USERNAME)
+                                            .issuedAt(Date.from(Instant.now()))
+                                            .expiration(Date.from(Instant.now().plusSeconds(3600)))
+                                            .signWith(getSecretKey(KEY_THAT_IS_ALSO_32_CHARS))
+                                            .compact();
 
     when(request.getHeader("Authorization")).thenReturn("Bearer " + tokenWithInvalidSignature);
 
@@ -183,6 +185,10 @@ class JwtFilterTest {
     assertNull(SecurityContextHolder.getContext().getAuthentication());
     verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     verify(filterChain, never()).doFilter(request, response);
+  }
+
+  private static SecretKey getSecretKey(String keyThatIsAlso32Chars) {
+    return Keys.hmacShaKeyFor(keyThatIsAlso32Chars.getBytes(StandardCharsets.UTF_8));
   }
 
   @Test

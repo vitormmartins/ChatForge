@@ -3,11 +3,13 @@ package io.vitormmartins.chatforge.infrastructure.security.filter;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * JWT authentication filter for processing Authorization header tokens.
@@ -32,7 +34,13 @@ public class JwtAuthenticationFilter extends AbstractJwtFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // Check if this is a Cookie-based authentication request
+        Cookie[] cookies = request.getCookies();
+        boolean hasCookieAuth = cookies != null && Arrays.stream(cookies)
+                .anyMatch(cookie -> "auth_token".equals(cookie.getName()));
+
+        // Skip token processing for Cookie-based auth requests
+        if (hasCookieAuth || authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * user creation to the {@link UserApplicationService}.
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 @Tag(name = "Authentication Controller", description = "Auth API endpoints")
 public class AuthController {
     

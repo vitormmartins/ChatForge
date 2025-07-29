@@ -29,8 +29,8 @@ public class CookieAuthenticationFilter extends AbstractJwtFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             Optional<Cookie> authCookie = Arrays.stream(cookies)
-                    .filter(cookie -> "auth_token".equals(cookie.getName()))
-                    .findFirst();
+                                                .filter(cookie -> "auth_token".equals(cookie.getName()))
+                                                .findFirst();
             if (authCookie.isPresent()) {
                 String token = authCookie.get().getValue();
                 if (processToken(token, request, response)) {

@@ -41,16 +41,18 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/v1/auth/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
                 .anyRequest().authenticated())
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint((request, response, authException) ->
+                .authenticationEntryPoint((
+                        request, response, authException) ->
                     response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized"))
-                .accessDeniedHandler((request, response, accessDeniedException) ->
+                .accessDeniedHandler((
+                        request, response, accessDeniedException) ->
                     response.sendError(HttpStatus.FORBIDDEN.value(), "Access Denied"))
             );
         return http.build();

@@ -131,12 +131,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8080/api/users/Capivara",
-					"protocol": "http",
+					"raw": "{{base_url}}/api/users/Capivara",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"api",
 						"users",
@@ -144,7 +142,82 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Get User Cookie Capivara",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc1Mzc1NjAyNSwiZXhwIjoxNzUzNzU5NjI1fQ._OCA2rA6GIQB3u5WeacNp-pFnUYW5jrkuf95F9qp4JGh5RlC4NZmLotIEAvMPnHf28EOBh-vIy-XA5oBCt4LwA"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/Capivara",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"Capivara"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 29 Jul 2025 02:37:51 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"username\": \"Capivara\",\n    \"email\": \"capivara@example.com\",\n    \"createdAt\": \"2025-07-23T21:28:55\"\n}"
+				}
+			]
 		},
 		{
 			"name": "JWT Login",
@@ -202,7 +275,7 @@
 			},
 			"response": [
 				{
-					"name": "JWT Login Capivara",
+					"name": "JWT Login Capivara User",
 					"originalRequest": {
 						"method": "POST",
 						"header": [
@@ -336,7 +409,7 @@
 			},
 			"response": [
 				{
-					"name": "Cookie Login Capivara",
+					"name": "Cookie Login Capivara User",
 					"originalRequest": {
 						"method": "POST",
 						"header": [
@@ -366,7 +439,7 @@
 					"header": [
 						{
 							"key": "Set-Cookie",
-							"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc0NjIwMTY5MywiZXhwIjoxNzQ2MjA1MjkzfQ.GFtxERbb8ucx5FNuOo-ji_xXYzfi33xxGcAHBjw1yWtxyJtZ02z0Y2tk20gdpZ5zfppXYB4GJ-LbE4VksX0fEg"
+							"value": "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc1Mzc0NTg4NSwiZXhwIjoxNzUzNzQ5NDg1fQ.CIa0nAS5AkVjdYAiEpGsUJRpUl89rI0LVoqjnmgaPuVWo5O8tQfFEntr0q9Jeo_a_lm01KOhT2PExEdylmrFYQ"
 						},
 						{
 							"key": "X-Content-Type-Options",
@@ -398,11 +471,11 @@
 						},
 						{
 							"key": "Content-Length",
-							"value": "10"
+							"value": "25"
 						},
 						{
 							"key": "Date",
-							"value": "Fri, 02 May 2025 16:01:33 GMT"
+							"value": "Mon, 28 Jul 2025 23:38:05 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -414,12 +487,12 @@
 						}
 					],
 					"cookie": [],
-					"body": "Cookie set"
+					"body": "Authentication successful"
 				}
 			]
 		},
 		{
-			"name": "User Register",
+			"name": "Register User",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -526,26 +599,6 @@
 			]
 		},
 		{
-			"name": "Actuator Health Check",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/actuator/health",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"actuator",
-						"health"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Check Username",
 			"request": {
 				"method": "GET",
@@ -635,6 +688,26 @@
 					"body": "false"
 				}
 			]
+		},
+		{
+			"name": "Actuator Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
