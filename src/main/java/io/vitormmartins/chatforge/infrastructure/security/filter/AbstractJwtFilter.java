@@ -3,6 +3,7 @@ package io.vitormmartins.chatforge.infrastructure.security.filter;
 import io.vitormmartins.chatforge.infrastructure.security.exception.InvalidTokenException;
 import io.vitormmartins.chatforge.infrastructure.security.exception.TokenExpiredException;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,9 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Abstract base class for JWT authentication filters.
@@ -42,5 +46,35 @@ public abstract class AbstractJwtFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return true;
         }
+    }
+
+    /**
+     * Extracts the authentication token from cookies if present.
+     *
+     * @param request The HTTP request containing cookies
+     * @return An Optional containing the auth token if found, empty otherwise
+     */
+    protected Optional<String> extractTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return Optional.empty();
+        }
+
+        return Arrays.stream(cookies)
+                    .filter(cookie -> "auth_token".equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst();
+    }
+
+    /**
+     * Checks if the request has cookie-based authentication.
+     *
+     * @param request The HTTP request to check
+     * @return true if the request has an auth token cookie, false otherwise
+     */
+    protected boolean hasCookieAuthentication(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        return cookies != null && Arrays.stream(cookies)
+                .anyMatch(cookie -> "auth_token".equals(cookie.getName()));
     }
 }
