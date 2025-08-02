@@ -32,9 +32,9 @@ public class JwtAuthenticationFilter extends AbstractJwtFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-        boolean hasCookieAuth = hasCookieAuthentication(request);
+        var cookieToken = extractTokenFromCookies(request);
 
-        if (hasCookieAuth || authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (cookieToken.isPresent() || authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }

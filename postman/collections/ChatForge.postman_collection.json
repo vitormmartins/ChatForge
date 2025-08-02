@@ -695,12 +695,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/actuator/health",
-					"protocol": "http",
+					"raw": "{{base_url}}/actuator/health",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
-					"port": "8080",
 					"path": [
 						"actuator",
 						"health"
