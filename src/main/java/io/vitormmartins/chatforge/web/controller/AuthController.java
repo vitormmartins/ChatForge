@@ -102,7 +102,7 @@ public class AuthController {
      * @param password the user's password
      * @return a JWT token as a string
      */
-    private String authenticateAndGenerateToken(String username, String password) {
+    String authenticateAndGenerateToken(String username, String password) {
         // Authenticate using Spring Security
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password)

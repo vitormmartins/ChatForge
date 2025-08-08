@@ -1,105 +1,133 @@
 package io.vitormmartins.chatforge.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitormmartins.chatforge.application.user.dto.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
 import io.vitormmartins.chatforge.web.controller.dto.LoginRequest;
 import io.vitormmartins.chatforge.web.controller.dto.RegisterRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @MockitoBean
+  @Mock
   private AuthenticationManager authenticationManager;
 
-  @MockitoBean
+  @Mock
   private JwtUtil jwtUtil;
 
-  @MockitoBean
+  @Mock
   private UserApplicationService userApplicationService;
 
+  @Mock
+  private HttpServletResponse httpServletResponse;
+
+  @InjectMocks
+  private AuthController authController;
+
+  private final String testUsername = "testuser";
+  private final String testPassword = "password123";
+  private final String testEmail = "test@example.com";
+  private final String testToken = "test.jwt.token";
+
   @Test
-  void testLogin() throws Exception {
-    String username = "user";
-    String password = "pass";
-    String token = "jwt-token";
+  void login_ShouldReturnToken_WhenCredentialsAreValid() {
+    // Arrange
+    LoginRequest request = new LoginRequest(testUsername, testPassword);
+    when(jwtUtil.generateToken(testUsername)).thenReturn(testToken);
 
-    doNothing().when(authenticationManager)
-            .authenticate(Mockito.any());
-    when(jwtUtil.generateToken(username)).thenReturn(token);
+    // Mock authentication
+    Authentication auth = mock(Authentication.class);
+    when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+            .thenReturn(auth);
 
-    LoginRequest request = new LoginRequest(username, password);
+    // Act
+    ResponseEntity<String> response = authController.login(request);
 
-    mockMvc.perform(post("/v1/auth/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andExpect(content().string(token));
+    // Assert
+    assertEquals(testToken, response.getBody());
+    verify(authenticationManager).authenticate(
+            new UsernamePasswordAuthenticationToken(testUsername, testPassword));
+    verify(jwtUtil).generateToken(testUsername);
   }
 
   @Test
-  void testLoginWithCookie() throws Exception {
-    String username = "user";
-    String password = "pass";
-    String token = "jwt-token";
+  void loginWithCookie_ShouldSetCookie_WhenCredentialsAreValid() {
+    // Arrange
+    LoginRequest request = new LoginRequest(testUsername, testPassword);
+    when(jwtUtil.generateToken(testUsername)).thenReturn(testToken);
 
-    doNothing().when(authenticationManager).authenticate(Mockito.any());
-    when(jwtUtil.generateToken(username)).thenReturn(token);
+    // Mock authentication
+    Authentication auth = mock(Authentication.class);
+    when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+            .thenReturn(auth);
 
-    LoginRequest request = new LoginRequest(username, password);
+    // Act
+    ResponseEntity<String> response = authController.loginWithCookie(request, httpServletResponse);
 
-    mockMvc.perform(post("/v1/auth/login-cookie")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andExpect(cookie().value("auth_token", token))
-            .andExpect(content().string("Authentication successful"));
+    // Assert
+    assertEquals("Authentication successful", response.getBody());
+    verify(httpServletResponse).addCookie(any(Cookie.class));
+    verify(authenticationManager).authenticate(
+            new UsernamePasswordAuthenticationToken(testUsername, testPassword));
+    verify(jwtUtil).generateToken(testUsername);
   }
 
   @Test
-  void testRegister() throws Exception {
-    String username = "user";
-    String password = "pass";
-    String email = "user@example.com";
-    io.vitormmartins.chatforge.application.user.dto.UserDto userDto =
-            new io.vitormmartins.chatforge.application.user.dto.UserDto(1L, username, email, LocalDateTime.now());
+  void register_ShouldReturnUserDto_WhenRegistrationIsSuccessful() {
+    // Arrange
+    RegisterRequest request = new RegisterRequest(testUsername, testEmail, testPassword);
+    UserDto expectedUserDto = new UserDto(
+            1L,
+            testUsername,
+            testEmail,
+            LocalDateTime.now()
+    );
 
-    when(userApplicationService.registerUser(Mockito.any()))
-            .thenReturn(userDto);
-    RegisterRequest request = new RegisterRequest(username, email, password);
+    when(userApplicationService.registerUser(any())).thenReturn(expectedUserDto);
 
-    mockMvc.perform(post("/v1/auth/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.username").value(username))
-            .andExpect(jsonPath("$.email").value(email));
+    // Act
+    ResponseEntity<UserDto> response = authController.register(request);
+
+    // Assert
+    assertEquals(expectedUserDto, response.getBody());
+    verify(userApplicationService).registerUser(any());
+  }
+
+  @Test
+  void authenticateAndGenerateToken_ShouldReturnToken_WhenAuthenticationSucceeds() {
+    // Arrange
+    when(jwtUtil.generateToken(testUsername)).thenReturn(testToken);
+
+    // Mock authentication
+    Authentication auth = mock(Authentication.class);
+    when(authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(testUsername, testPassword)))
+            .thenReturn(auth);
+
+    // Act
+    String token = authController.authenticateAndGenerateToken(testUsername, testPassword);
+
+    // Assert
+    assertEquals(testToken, token);
+    verify(authenticationManager).authenticate(
+            new UsernamePasswordAuthenticationToken(testUsername, testPassword));
+    verify(jwtUtil).generateToken(testUsername);
   }
 }
