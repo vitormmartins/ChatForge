@@ -1,7 +1,7 @@
 package io.vitormmartins.chatforge.web.controller;
 
-import io.vitormmartins.chatforge.application.user.dto.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
+import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -157,6 +157,7 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- OpenAPI and Swagger UI dependencies -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -209,6 +210,42 @@
                     <source>${java.version}</source>
                     <detectJavaApiLink>false</detectJavaApiLink>
                 </configuration>
+            </plugin>
+            <!-- OpenAPI Generator Plugin -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.3.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/openapi/openapi_spec.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <java8>true</java8>
+                                <dateLibrary>java8</dateLibrary>
+                                <useTags>true</useTags>
+                                <apiPackage>io.vitormmartins.chatforge.generated.api</apiPackage>
+                                <modelPackage>io.vitormmartins.chatforge.generated.model</modelPackage>
+                                <invokerPackage>io.vitormmartins.chatforge.generated</invokerPackage>
+                                <serializableModel>true</serializableModel>
+                                <library>spring-boot</library>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <openApiNullable>false</openApiNullable>
+                                <useOptional>true</useOptional>
+                            </configOptions>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

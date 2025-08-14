@@ -1,17 +1,16 @@
 package io.vitormmartins.chatforge;
 
-import io.vitormmartins.chatforge.application.user.dto.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.config.TestSecurityConfig;
 import io.vitormmartins.chatforge.config.TestJwtConfig;
 import io.vitormmartins.chatforge.config.TestMongoConfig;
 import io.vitormmartins.chatforge.config.TestSecurityComponentsConfig;
+import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,9 +19,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -57,16 +58,16 @@ class ChatForgeApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private UserApplicationService userApplicationService;
 
-    @MockBean
+    @MockitoBean
     private AuthenticationManager authenticationManager;
 
     private final String testUsername = "Capivara";
     private final String testPassword = "aravipac";
     private final String testEmail = "capivara@example.com";
-    private final long testUserId = 1L;
+    private final Integer testUserId = 11;
     private final LocalDateTime testCreatedAt = LocalDateTime.now();
 
     @BeforeEach
@@ -87,9 +88,12 @@ class ChatForgeApplicationTests {
     @Test
     void getUser_ShouldReturnUser_WhenUserExists() throws Exception {
         // Arrange
-        UserDto userDto = new UserDto(testUserId, testUsername, testEmail, testCreatedAt);
-        when(userApplicationService.findUserByUsername(testUsername))
-                .thenReturn(Optional.of(userDto));
+        UserDto userDto = new UserDto();
+        userDto.setId(testUserId);
+        userDto.setUsername(testUsername);
+        userDto.setEmail(testEmail);
+        userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
+        when(userApplicationService.findUserByUsername(testUsername)).thenReturn(Optional.of(userDto));
 
         // Act & Assert
         mockMvc.perform(get("/v1/api/users/{username}", testUsername)
@@ -114,11 +118,14 @@ class ChatForgeApplicationTests {
     @Test
     void login_ShouldReturnJwtToken_WhenCredentialsAreValid() throws Exception {
         // Arrange
+        UserDto userDto = new UserDto();
+        userDto.setId(testUserId);
+        userDto.setUsername(testUsername);
+        userDto.setEmail(testEmail);
+     userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
-        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(
-                new UserDto(testUserId, testUsername, testEmail, testCreatedAt)
-        ));
+        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userDto));
 
         // Act & Assert
         mockMvc.perform(post("/v1/auth/login")
@@ -136,11 +143,14 @@ class ChatForgeApplicationTests {
     @Test
     void loginWithCookie_ShouldSetAuthCookie_WhenCredentialsAreValid() throws Exception {
         // Arrange
+        UserDto userDto = new UserDto();
+        userDto.setId(testUserId);
+        userDto.setUsername(testUsername);
+        userDto.setEmail(testEmail);
+    userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
-        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(
-                new UserDto(testUserId, testUsername, testEmail, testCreatedAt)
-        ));
+        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userDto));
 
         // Act & Assert
         mockMvc.perform(post("/v1/auth/login-cookie")
@@ -159,8 +169,11 @@ class ChatForgeApplicationTests {
     @Test
     void registerUser_ShouldReturnUserDto_WhenRegistrationIsSuccessful() throws Exception {
         // Arrange
-        UserDto expectedUser = new UserDto(testUserId, testUsername, testEmail, testCreatedAt);
-
+        UserDto expectedUser = new UserDto();
+        expectedUser.setId(testUserId);
+        expectedUser.setUsername(testUsername);
+        expectedUser.setEmail(testEmail);
+        expectedUser.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
         when(userApplicationService.registerUser(any())).thenReturn(expectedUser);
 
         // Act & Assert

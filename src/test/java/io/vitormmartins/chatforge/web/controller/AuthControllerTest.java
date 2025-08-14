@@ -1,23 +1,24 @@
 package io.vitormmartins.chatforge.web.controller;
 
-import io.vitormmartins.chatforge.application.user.dto.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
+import io.vitormmartins.chatforge.generated.model.LoginRequest;
+import io.vitormmartins.chatforge.generated.model.RegisterRequest;
+import io.vitormmartins.chatforge.generated.model.UserDto;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
-import io.vitormmartins.chatforge.web.controller.dto.LoginRequest;
-import io.vitormmartins.chatforge.web.controller.dto.RegisterRequest;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,13 +44,12 @@ class AuthControllerTest {
 
   private final String testUsername = "testuser";
   private final String testPassword = "password123";
-  private final String testEmail = "test@example.com";
   private final String testToken = "test.jwt.token";
 
   @Test
-  void login_ShouldReturnToken_WhenCredentialsAreValid() {
+  void v1AuthLoginPost_ShouldReturnToken_WhenCredentialsAreValid() {
     // Arrange
-    LoginRequest request = new LoginRequest(testUsername, testPassword);
+    @Valid LoginRequest request = new LoginRequest(testUsername, testPassword);
     when(jwtUtil.generateToken(testUsername)).thenReturn(testToken);
 
     // Mock authentication
@@ -58,19 +58,18 @@ class AuthControllerTest {
             .thenReturn(auth);
 
     // Act
-    ResponseEntity<String> response = authController.login(request);
+    ResponseEntity<String> response = authController.v1AuthLoginPost(request);
 
     // Assert
     assertEquals(testToken, response.getBody());
-    verify(authenticationManager).authenticate(
-            new UsernamePasswordAuthenticationToken(testUsername, testPassword));
+    verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
     verify(jwtUtil).generateToken(testUsername);
   }
 
   @Test
-  void loginWithCookie_ShouldSetCookie_WhenCredentialsAreValid() {
+  void v1AuthLoginPostWithCookie_ShouldSetCookie_WhenCredentialsAreValid() {
     // Arrange
-    LoginRequest request = new LoginRequest(testUsername, testPassword);
+    @Valid LoginRequest request = new LoginRequest(testUsername, testPassword);
     when(jwtUtil.generateToken(testUsername)).thenReturn(testToken);
 
     // Mock authentication
@@ -79,31 +78,32 @@ class AuthControllerTest {
             .thenReturn(auth);
 
     // Act
-    ResponseEntity<String> response = authController.loginWithCookie(request, httpServletResponse);
+    ResponseEntity<String> response = authController.v1AuthLoginCookiePost(request);
 
     // Assert
     assertEquals("Authentication successful", response.getBody());
-    verify(httpServletResponse).addCookie(any(Cookie.class));
-    verify(authenticationManager).authenticate(
-            new UsernamePasswordAuthenticationToken(testUsername, testPassword));
+    // Verify that a cookie is set in the response header instead of interacting with httpServletResponse
+    assertTrue(response.getHeaders().containsKey(HttpHeaders.SET_COOKIE));
+    verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
     verify(jwtUtil).generateToken(testUsername);
   }
 
   @Test
-  void register_ShouldReturnUserDto_WhenRegistrationIsSuccessful() {
+  void v1AuthRegisterPost_ShouldReturnUserDto_WhenRegistrationIsSuccessful() {
     // Arrange
-    RegisterRequest request = new RegisterRequest(testUsername, testEmail, testPassword);
-    UserDto expectedUserDto = new UserDto(
-            1L,
-            testUsername,
-            testEmail,
-            LocalDateTime.now()
-    );
+    String testEmail = "test@example.com";
+    @Valid RegisterRequest request = new RegisterRequest(testUsername, testEmail, testPassword);
+
+    UserDto expectedUserDto = new UserDto();
+    expectedUserDto.setId(1);
+    expectedUserDto.setUsername(testUsername);
+    expectedUserDto.setEmail(testEmail);
+    expectedUserDto.setCreatedAt(OffsetDateTime.now());
 
     when(userApplicationService.registerUser(any())).thenReturn(expectedUserDto);
 
     // Act
-    ResponseEntity<UserDto> response = authController.register(request);
+    ResponseEntity<UserDto> response = authController.v1AuthRegisterPost(request);
 
     // Assert
     assertEquals(expectedUserDto, response.getBody());

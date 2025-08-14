@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: ChatForge API
+  description: API for ChatForge - A real-time web chat application
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: "{{base_url}}"
+    description: Production server (variable)
+tags:
+  - name: Authentication
+    description: User authentication and registration
+  - name: Users
+    description: User management operations
+paths:
+  /v1/auth/login:
+    post:
+      tags: [Authentication]
+      summary: User v1AuthLoginPost
+      description: Authenticates user and returns JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc0NjIwMTcyMiwiZXhwIjoxNzQ2MjA1MzIyfQ.ZONTCsB0tourVG7YS95pDSqK6Gzxe4Vxj_7GIKVILhtk4k6QxGQcjqk98xb34pp5HduxBHCAtBetjsrjCEDijw"
+        '401':
+          description: Unauthorized - Invalid credentials
+  /v1/auth/login-cookie:
+    post:
+      tags: [Authentication]
+      summary: User v1AuthLoginPost with cookie
+      description: Authenticates user and sets JWT in cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Authentication successful"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "auth_token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDYXBpdmFyYSIsImlhdCI6MTc1Mzc0NTg4NSwiZXhwIjoxNzUzNzQ5NDg1fQ.CIa0nAS5AkVjdYAiEpGsUJRpUl89rI0LVoqjnmgaPuVWo5O8tQfFEntr0q9Jeo_a_lm01KOhT2PExEdylmrFYQ; Path=/; HttpOnly"
+        '401':
+          description: Unauthorized - Invalid credentials
+  /v1/auth/register:
+    post:
+      tags: [Authentication]
+      summary: User registration
+      description: Creates a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Bad request - Invalid input data
+        '409':
+          description: Conflict - Username or email already exists
+  /v1/api/users/{username}:
+    get:
+      tags: [Users]
+      summary: Get user by username
+      description: Retrieves user details by username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Capivara"
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+  /v1/api/users/check-username/{username}:
+    get:
+      tags: [Users]
+      summary: Check username availability
+      description: Checks if a username is available
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Capivara"
+      responses:
+        '200':
+          description: Username availability status
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: false
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+  /actuator/health:
+    get:
+      tags: [System]
+      summary: Health check
+      description: Returns the health status of the application
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "UP"
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "Capivara"
+        password:
+          type: string
+          example: "aravipac"
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: "Capivara"
+        email:
+          type: string
+          format: email
+          example: "capivara@example.com"
+        password:
+          type: string
+          example: "aravipac"
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "Capivara"
+        email:
+          type: string
+          format: email
+          example: "capivara@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-07-23T21:28:55"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth_token
+security:
+  - bearerAuth: []
+  - cookieAuth: []

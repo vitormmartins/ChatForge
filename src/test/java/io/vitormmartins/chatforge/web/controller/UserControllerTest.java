@@ -1,7 +1,7 @@
 package io.vitormmartins.chatforge.web.controller;
 
-import io.vitormmartins.chatforge.application.user.dto.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
+import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,13 +28,17 @@ class UserControllerTest {
 
     private final String testUsername = "testuser";
     private final String testEmail = "test@example.com";
-    private final long testUserId = 1L;
-    private final LocalDateTime testCreatedAt = LocalDateTime.now();
+    private final Integer testUserId = 1;
+    private final OffsetDateTime testCreatedAt = OffsetDateTime.now();
 
     @Test
     void getUserByUsername_ShouldReturnUser_WhenUserExists() {
         // Arrange
-        UserDto expectedUser = new UserDto(testUserId, testUsername, testEmail, testCreatedAt);
+        UserDto expectedUser = new UserDto();
+        expectedUser.setId(testUserId);
+        expectedUser.setUsername(testUsername);
+        expectedUser.setEmail(testEmail);
+        expectedUser.setCreatedAt(testCreatedAt);
         when(userApplicationService.findUserByUsername(testUsername))
                 .thenReturn(Optional.of(expectedUser));
 
