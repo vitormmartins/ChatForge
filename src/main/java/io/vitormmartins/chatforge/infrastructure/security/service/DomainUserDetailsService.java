@@ -28,8 +28,8 @@ public class DomainUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(usernameObj)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         
-        return withUsername(user.getUsername().getValue())
-            .password(user.getPassword().getEncodedValue())
+        return withUsername(user.getUsername().value())
+            .password(user.getPassword().encodedValue())
             .authorities("USER") // For now, simple role assignment
             .build();
     }

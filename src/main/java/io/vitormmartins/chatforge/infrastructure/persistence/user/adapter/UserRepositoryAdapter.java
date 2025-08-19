@@ -33,7 +33,7 @@ public class UserRepositoryAdapter implements UserRepository {
             jpaEntity = UserMapper.toJpaEntity(user);
         } else {
             // Existing user - load and update
-            jpaEntity = jpaRepository.findById(user.getId().getValue())
+            jpaEntity = jpaRepository.findById(user.getId().value())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + user.getId()));
             UserMapper.updateJpaEntity(jpaEntity, user);
         }
@@ -44,23 +44,23 @@ public class UserRepositoryAdapter implements UserRepository {
     
     @Override
     public Optional<User> findById(UserId id) {
-        return jpaRepository.findById(id.getValue())
+        return jpaRepository.findById(id.value())
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
     public Optional<User> findByUsername(Username username) {
-        return jpaRepository.findByUsername(username.getValue())
+        return jpaRepository.findByUsername(username.value())
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
     public boolean existsByUsername(Username username) {
-        return jpaRepository.existsByUsername(username.getValue());
+        return jpaRepository.existsByUsername(username.value());
     }
     
     @Override
     public void deleteById(UserId id) {
-        jpaRepository.deleteById(id.getValue());
+        jpaRepository.deleteById(id.value());
     }
 }

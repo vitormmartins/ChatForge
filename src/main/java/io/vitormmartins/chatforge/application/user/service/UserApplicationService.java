@@ -7,7 +7,7 @@ import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import io.vitormmartins.chatforge.domain.user.service.UserDomainService;
 import io.vitormmartins.chatforge.generated.model.UserDto;
 
-import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 /**
@@ -41,7 +41,7 @@ public class UserApplicationService {
         Email email = command.email() != null ? new Email(command.email()) : null;
         Password password = Password.fromEncoded(encodedPassword);
         
-        // Use domain service to create user
+        // Use domain service to create a user
         User createdUser = userDomainService.createUser(username, email, password);
         
         // Convert to DTO
@@ -49,13 +49,13 @@ public class UserApplicationService {
     }
     
     /**
-     * Authenticates a user with username and password.
+     * Authenticates a user with a username and password.
      */
     public Optional<io.vitormmartins.chatforge.generated.model.UserDto> authenticateUser(AuthenticateUserCommand command) {
         Username username = new Username(command.username());
         
         return userRepository.findByUsername(username)
-            .filter(user -> passwordEncoder.matches(command.rawPassword(), user.getPassword().getEncodedValue()))
+            .filter(user -> passwordEncoder.matches(command.rawPassword(), user.getPassword().encodedValue()))
             .map(this::mapToDto);
     }
     
@@ -76,9 +76,12 @@ public class UserApplicationService {
         return userDomainService.isUsernameAvailable(usernameObj);
     }
     
-    private io.vitormmartins.chatforge.generated.model.UserDto mapToDto(User user) {
+    private UserDto mapToDto(User user) {
         UserDto userDto = new UserDto();
-            userDto.setCreatedAt(OffsetDateTime.from(user.getCreatedAt()));
+        userDto.setId(user.getId().value().intValue());
+        userDto.setUsername(user.getUsername().value());
+        userDto.setEmail(user.getEmail().value());
+        userDto.setCreatedAt(user.getCreatedAt().atOffset(ZoneOffset.UTC));
         return userDto;
     }
 }

@@ -16,8 +16,9 @@ tags:
 paths:
   /v1/auth/login:
     post:
+      operationId: v1AuthLoginPost
       tags: [Authentication]
-      summary: User v1AuthLoginPost
+      summary: User login
       description: Authenticates user and returns JWT token
       requestBody:
         required: true
@@ -37,8 +38,9 @@ paths:
           description: Unauthorized - Invalid credentials
   /v1/auth/login-cookie:
     post:
+      operationId: v1AuthLoginCookiePost
       tags: [Authentication]
-      summary: User v1AuthLoginPost with cookie
+      summary: User login with cookie
       description: Authenticates user and sets JWT in cookie
       requestBody:
         required: true
@@ -63,6 +65,7 @@ paths:
           description: Unauthorized - Invalid credentials
   /v1/auth/register:
     post:
+      operationId: v1AuthRegisterPost
       tags: [Authentication]
       summary: User registration
       description: Creates a new user account
@@ -83,8 +86,49 @@ paths:
           description: Bad request - Invalid input data
         '409':
           description: Conflict - Username or email already exists
+  /v1/auth/update-password:
+    put:
+      operationId: v1AuthUpdatePasswordPut
+      tags: [Authentication]
+      summary: Update password
+      description: Updates the password of the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordRequest'
+      responses:
+        '200':
+          description: Password updated successfully
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid or expired token
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+  /v1/auth/delete-account:
+    delete:
+      operationId: v1AuthDeleteAccountDelete
+      tags: [Authentication]
+      summary: Delete user account
+      description: Deletes the authenticated user's account
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          description: Unauthorized - Invalid or expired token
+        '404':
+          description: User not found
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
   /v1/api/users/{username}:
     get:
+      operationId: v1ApiUsersUsernameGet
       tags: [Users]
       summary: Get user by username
       description: Retrieves user details by username
@@ -109,6 +153,7 @@ paths:
         - cookieAuth: []
   /v1/api/users/check-username/{username}:
     get:
+      operationId: v1ApiUsersCheckUsernameGet
       tags: [Users]
       summary: Check username availability
       description: Checks if a username is available
@@ -132,6 +177,7 @@ paths:
         - cookieAuth: []
   /actuator/health:
     get:
+      operationId: actuatorHealthGet
       tags: [System]
       summary: Health check
       description: Returns the health status of the application
@@ -194,6 +240,18 @@ components:
           type: string
           format: date-time
           example: "2025-07-23T21:28:55"
+    UpdatePasswordRequest:
+      type: object
+      required:
+        - oldPassword
+        - newPassword
+      properties:
+        oldPassword:
+          type: string
+          example: "currentPass123"
+        newPassword:
+          type: string
+          example: "newSecurePass456"
   securitySchemes:
     bearerAuth:
       type: http

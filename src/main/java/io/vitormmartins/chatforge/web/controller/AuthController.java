@@ -5,6 +5,7 @@ import io.vitormmartins.chatforge.application.user.dto.RegisterUserCommand;
 import io.vitormmartins.chatforge.generated.api.AuthenticationApi;
 import io.vitormmartins.chatforge.generated.model.LoginRequest;
 import io.vitormmartins.chatforge.generated.model.RegisterRequest;
+import io.vitormmartins.chatforge.generated.model.UpdatePasswordRequest;
 import io.vitormmartins.chatforge.generated.model.UserDto;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.infrastructure.security.util.JwtUtil;
@@ -70,6 +71,22 @@ public class AuthController implements AuthenticationApi {
 
         UserDto createdUser = userApplicationService.registerUser(command);
         return ResponseEntity.ok(createdUser);
+    }
+
+    @Override
+    @PutMapping("/update-password")
+    public ResponseEntity<Void> v1AuthUpdatePasswordPut(@Valid
+                                                        @RequestBody
+                                                        UpdatePasswordRequest updatePasswordRequest) {
+        // TODO: implement password update logic
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<Void> v1AuthDeleteAccountDelete() {
+        // TODO: implement delete account logic
+        return ResponseEntity.noContent().build();
     }
 
     String authenticateAndGenerateToken(String username, String password) {

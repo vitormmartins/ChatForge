@@ -8,15 +8,19 @@ import io.vitormmartins.chatforge.infrastructure.persistence.user.entity.UserJpa
  * Handles the conversion between domain and infrastructure models.
  */
 public class UserMapper {
+
+    private UserMapper() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     
     /**
      * Converts domain User to JPA entity.
      */
     public static UserJpaEntity toJpaEntity(User domainUser) {
         return new UserJpaEntity(
-            domainUser.getUsername().getValue(),
-            domainUser.getPassword().getEncodedValue(),
-            domainUser.getEmail() != null ? domainUser.getEmail().getValue() : null,
+            domainUser.getUsername().value(),
+            domainUser.getPassword().encodedValue(),
+            domainUser.getEmail() != null ? domainUser.getEmail().value() : null,
             domainUser.getCreatedAt(),
             domainUser.getUpdatedAt()
         );
@@ -38,9 +42,9 @@ public class UserMapper {
      * Updates JPA entity with data from domain User (for updates).
      */
     public static void updateJpaEntity(UserJpaEntity jpaEntity, User domainUser) {
-        jpaEntity.setUsername(domainUser.getUsername().getValue());
-        jpaEntity.setPassword(domainUser.getPassword().getEncodedValue());
-        jpaEntity.setEmail(domainUser.getEmail() != null ? domainUser.getEmail().getValue() : null);
+        jpaEntity.setUsername(domainUser.getUsername().value());
+        jpaEntity.setPassword(domainUser.getPassword().encodedValue());
+        jpaEntity.setEmail(domainUser.getEmail() != null ? domainUser.getEmail().value() : null);
         jpaEntity.setUpdatedAt(domainUser.getUpdatedAt());
     }
 }
