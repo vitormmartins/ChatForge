@@ -34,7 +34,8 @@ public class UserRepositoryAdapter implements UserRepository {
         } else {
             // Existing user - load and update
             jpaEntity = jpaRepository.findById(user.getId().value())
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + user.getId()));
+                                     .orElseThrow(() -> new IllegalArgumentException("User not found: "
+                                                                                     + user.getId()));
             UserMapper.updateJpaEntity(jpaEntity, user);
         }
         
