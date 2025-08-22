@@ -1,7 +1,7 @@
 package io.vitormmartins.chatforge.application.user.dto;
 
 /**
- * Command for user registration use case.
+ * Command for a user registration use case.
  */
 public record RegisterUserCommand(
     String username,

@@ -10,6 +10,7 @@ import java.util.Optional;
  * Repository interface for User domain entity.
  * This is a port (interface) that will be implemented by the infrastructure layer.
  */
+@SuppressWarnings("unused")
 public interface UserRepository {
     
     /**
@@ -36,7 +37,7 @@ public interface UserRepository {
     /**
      * Checks if a username already exists.
      * @param username the username to check
-     * @return true if username exists, false otherwise
+     * @return true if a username exists, false otherwise
      */
     boolean existsByUsername(Username username);
     
