@@ -1,8 +1,6 @@
 package io.vitormmartins.chatforge.infrastructure.persistence.user.adapter;
 
 import io.vitormmartins.chatforge.domain.user.model.User;
-import io.vitormmartins.chatforge.domain.user.model.UserId;
-import io.vitormmartins.chatforge.domain.user.model.Username;
 import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.entity.UserJpaEntity;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.mapper.UserMapper;
@@ -28,12 +26,12 @@ public class UserRepositoryAdapter implements UserRepository {
     public User save(User user) {
         UserJpaEntity jpaEntity;
         
-        if (user.getId() == null) {
+        if (!user.getId().isPresent()) {
             // New user - convert to JPA entity
             jpaEntity = UserMapper.toJpaEntity(user);
         } else {
             // Existing user - load and update
-            jpaEntity = jpaRepository.findById(user.getId().value())
+            jpaEntity = jpaRepository.findById(user.getId().get())
                                      .orElseThrow(() -> new IllegalArgumentException("User not found: "
                                                                                      + user.getId()));
             UserMapper.updateJpaEntity(jpaEntity, user);
@@ -44,24 +42,24 @@ public class UserRepositoryAdapter implements UserRepository {
     }
     
     @Override
-    public Optional<User> findById(UserId id) {
-        return jpaRepository.findById(id.value())
+    public Optional<User> findById(long id) {
+        return jpaRepository.findById(id)
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
-    public Optional<User> findByUsername(Username username) {
-        return jpaRepository.findByUsername(username.value())
+    public Optional<User> findByUsername(String username) {
+        return jpaRepository.findByUsername(username)
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
-    public boolean existsByUsername(Username username) {
-        return jpaRepository.existsByUsername(username.value());
+    public boolean existsByUsername(String username) {
+        return jpaRepository.existsByUsername(username);
     }
     
     @Override
-    public void deleteById(UserId id) {
-        jpaRepository.deleteById(id.value());
+    public void deleteById(long id) {
+        jpaRepository.deleteById(id);
     }
 }

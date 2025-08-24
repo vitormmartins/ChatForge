@@ -1,7 +1,6 @@
 package io.vitormmartins.chatforge.infrastructure.security.service;
 
 import io.vitormmartins.chatforge.domain.user.model.User;
-import io.vitormmartins.chatforge.domain.user.model.Username;
 import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,12 +23,11 @@ public class DomainUserDetailsService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Username usernameObj = new Username(username);
-        User user = userRepository.findByUsername(usernameObj)
+        User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         
-        return withUsername(user.getUsername().value())
-            .password(user.getPassword().encodedValue())
+        return withUsername(user.getUsername())
+            .password(user.getPassword())
             .authorities("USER") // For now, simple role assignment
             .build();
     }
