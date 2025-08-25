@@ -6,9 +6,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-/**
- * Configuration for password encoding and security.
- */
 public class PasswordConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {

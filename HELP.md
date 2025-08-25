@@ -56,6 +56,21 @@ If you manually switch to a different parent and actually want the inheritance, 
 
 This guide explains how to run the ChatForge application using either Docker Compose (recommended), manually setting up individual containers, or running the application directly.
 
+### Important Configuration Note
+
+Before running the application, ensure that the database configuration is properly defined in the `application.properties` file. You need to specify the database connection details, such as the URL, username, and password. For example:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/chatforge?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=my-secret-pw
+```
+
+If you are using Docker Compose, these values are automatically set through environment variables in the `docker-compose.yml` file.
+
+One can also define the password as an environment variable to avoid hardcoding it in the `application.properties` file:
+
+
 ### Building the Application
 
 Before running the application with any method, you need to build it:

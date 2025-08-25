@@ -2,7 +2,7 @@ package io.vitormmartins.chatforge.application.user.service;
 
 /**
  * Port interface for password encoding operations.
- * To be implemented by infrastructure layer.
+ * To be implemented by the infrastructure layer.
  */
 public interface PasswordEncoderPort {
     

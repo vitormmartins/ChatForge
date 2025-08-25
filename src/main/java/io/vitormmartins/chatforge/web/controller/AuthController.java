@@ -63,10 +63,9 @@ public class AuthController implements AuthenticationApi {
     @Override
     @PostMapping("/register")
     public ResponseEntity<UserDto> v1AuthRegisterPost(@Valid @RequestBody RegisterRequest registerRequest) {
-        RegisterUserCommand command = new RegisterUserCommand(
-                registerRequest.getUsername(),
-                registerRequest.getEmail(),
-                registerRequest.getPassword()
+        RegisterUserCommand command = new RegisterUserCommand(registerRequest.getUsername(),
+                                                              registerRequest.getEmail(),
+                                                              registerRequest.getPassword()
         );
 
         UserDto createdUser = userApplicationService.registerUser(command);
