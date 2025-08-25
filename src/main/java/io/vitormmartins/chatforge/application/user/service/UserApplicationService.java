@@ -27,9 +27,9 @@ public record UserApplicationService(UserRepository userRepository,
     String encodedPassword = passwordEncoder.encode(command.rawPassword());
 
     // Create domain value objects
-    Username username = new Username(command.username());
-    Email email = command.email() != null ? new Email(command.email()) : null;
-    Password password = Password.fromEncoded(encodedPassword);
+    String username = command.username();
+    String email = command.email();
+    String password = encodedPassword;
 
     // Use domain service to create a user
     User createdUser = userDomainService.createUser(username, email, password);
@@ -42,10 +42,8 @@ public record UserApplicationService(UserRepository userRepository,
    * Authenticates a user with a username and password.
    */
   public Optional<UserDto> authenticateUser(AuthenticateUserCommand command) {
-    Username username = new Username(command.username());
-
-    return userRepository.findByUsername(username)
-            .filter(user -> passwordEncoder.matches(command.rawPassword(), user.getPassword().encodedValue()))
+    return userRepository.findByUsername(command.username())
+            .filter(user -> passwordEncoder.matches(command.rawPassword(), user.getPassword()))
             .map(this::mapToDto);
   }
 
@@ -53,8 +51,7 @@ public record UserApplicationService(UserRepository userRepository,
    * Finds a user by username.
    */
   public Optional<UserDto> findUserByUsername(String username) {
-    Username usernameObj = new Username(username);
-    return userRepository.findByUsername(usernameObj)
+    return userRepository.findByUsername(username)
             .map(this::mapToDto);
   }
 
@@ -62,15 +59,14 @@ public record UserApplicationService(UserRepository userRepository,
    * Checks if a username is available for registration.
    */
   public boolean isUsernameAvailable(String username) {
-    Username usernameObj = new Username(username);
-    return userDomainService.isUsernameAvailable(usernameObj);
+    return userDomainService.isUsernameAvailable(username);
   }
 
   private UserDto mapToDto(User user) {
     UserDto userDto = new UserDto();
-    userDto.setId(user.getId().value().intValue());
-    userDto.setUsername(user.getUsername().value());
-    userDto.setEmail(user.getEmail().value());
+    userDto.setId(user.getId().orElse(0L));
+    userDto.setUsername(user.getUsername());
+    userDto.setEmail(user.getEmail());
     userDto.setCreatedAt(user.getCreatedAt().atOffset(ZoneOffset.UTC));
     return userDto;
   }

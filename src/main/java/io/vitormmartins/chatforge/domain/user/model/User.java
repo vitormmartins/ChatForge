@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * User domain entity representing a user in the chat system.
@@ -11,14 +12,18 @@ import java.util.Objects;
  */
 @Getter
 public class User {
-  private final UserId id;
-  private final Username username;
-  private final Email email;
-  private final Password password;
+  private final Optional<Long> id;
+  private final String username;
+  private final String email;
+  private final String password;
   private final LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  public User(UserId id, Username username, Email email, Password password, LocalDateTime createdAt) {
+  public User(Optional<Long> id, String username, String email, String password) {
+    this(id, username, email, password, LocalDateTime.now());
+  }
+
+  public User(Optional<Long> id, String username, String email, String password, LocalDateTime createdAt) {
     this.id = id;
     this.username = Objects.requireNonNull(username, "Username cannot be null");
     this.email = email;
@@ -27,13 +32,8 @@ public class User {
     this.updatedAt = createdAt;
   }
 
-  // Factory method for creating new users
-  public static User create(Username username, Email email, Password password) {
-    return new User(null, username, email, password, LocalDateTime.now());
-  }
-
   // Business methods
-  public void updatePassword(Password newPassword) {
+  public void updatePassword(String newPassword) {
     if (this.password.equals(newPassword)) {
       throw new IllegalArgumentException("New password must be different from current password");
     }

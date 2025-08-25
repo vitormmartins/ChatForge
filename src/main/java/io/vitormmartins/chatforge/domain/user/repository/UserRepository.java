@@ -1,8 +1,6 @@
 package io.vitormmartins.chatforge.domain.user.repository;
 
 import io.vitormmartins.chatforge.domain.user.model.User;
-import io.vitormmartins.chatforge.domain.user.model.UserId;
-import io.vitormmartins.chatforge.domain.user.model.Username;
 
 import java.util.Optional;
 
@@ -25,25 +23,25 @@ public interface UserRepository {
      * @param id the user ID
      * @return optional user if found
      */
-    Optional<User> findById(UserId id);
+    Optional<User> findById(long id);
     
     /**
      * Finds a user by their username.
      * @param username the username to search for
      * @return optional user if found
      */
-    Optional<User> findByUsername(Username username);
+    Optional<User> findByUsername(String username);
     
     /**
      * Checks if a username already exists.
      * @param username the username to check
      * @return true if a username exists, false otherwise
      */
-    boolean existsByUsername(Username username);
+    boolean existsByUsername(String username);
     
     /**
      * Deletes a user by their ID.
      * @param id the user ID to delete
      */
-    void deleteById(UserId id);
+    void deleteById(long id);
 }

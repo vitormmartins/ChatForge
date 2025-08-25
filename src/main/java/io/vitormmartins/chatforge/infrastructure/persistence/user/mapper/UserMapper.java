@@ -1,5 +1,7 @@
 package io.vitormmartins.chatforge.infrastructure.persistence.user.mapper;
 
+import java.util.Optional;
+
 import io.vitormmartins.chatforge.domain.user.model.*;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.entity.UserJpaEntity;
 
@@ -18,9 +20,9 @@ public class UserMapper {
      */
     public static UserJpaEntity toJpaEntity(User domainUser) {
         return new UserJpaEntity(
-            domainUser.getUsername().value(),
-            domainUser.getPassword().encodedValue(),
-            domainUser.getEmail() != null ? domainUser.getEmail().value() : null,
+            domainUser.getUsername(),
+            domainUser.getPassword(),
+            domainUser.getEmail() != null ? domainUser.getEmail() : null,
             domainUser.getCreatedAt(),
             domainUser.getUpdatedAt()
         );
@@ -29,22 +31,22 @@ public class UserMapper {
     /**
      * Converts JPA entity to domain User.
      */
-    public static User toDomainEntity(UserJpaEntity jpaEntity) {
-        UserId id = jpaEntity.getId() != null ? new UserId(jpaEntity.getId()) : null;
-        Username username = new Username(jpaEntity.getUsername());
-        Email email = jpaEntity.getEmail() != null ? new Email(jpaEntity.getEmail()) : null;
-        Password password = Password.fromEncoded(jpaEntity.getPassword());
-        
-        return new User(id, username, email, password, jpaEntity.getCreatedAt());
+    public static User toDomainEntity(UserJpaEntity jpaEntity) {        
+        return new User(
+            Optional.of(jpaEntity.getId()),
+            jpaEntity.getUsername(),
+            jpaEntity.getEmail(),
+            jpaEntity.getPassword(),
+            jpaEntity.getCreatedAt());
     }
     
     /**
      * Updates JPA entity with data from domain User (for updates).
      */
     public static void updateJpaEntity(UserJpaEntity jpaEntity, User domainUser) {
-        jpaEntity.setUsername(domainUser.getUsername().value());
-        jpaEntity.setPassword(domainUser.getPassword().encodedValue());
-        jpaEntity.setEmail(domainUser.getEmail() != null ? domainUser.getEmail().value() : null);
+        jpaEntity.setUsername(domainUser.getUsername());
+        jpaEntity.setPassword(domainUser.getPassword());
+        jpaEntity.setEmail(domainUser.getEmail());
         jpaEntity.setUpdatedAt(domainUser.getUpdatedAt());
     }
 }
