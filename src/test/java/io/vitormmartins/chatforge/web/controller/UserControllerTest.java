@@ -20,99 +20,99 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-    @Mock
-    private UserApplicationService userApplicationService;
+  @Mock
+  private UserApplicationService userApplicationService;
 
-    @InjectMocks
-    private UserController userController;
+  @InjectMocks
+  private UserController userController;
 
-    private final String testUsername = "testuser";
-    private final String testEmail = "test@example.com";
-    private final Integer testUserId = 1;
-    private final OffsetDateTime testCreatedAt = OffsetDateTime.now();
+  private final String testUsername = "testuser";
+  private final OffsetDateTime testCreatedAt = OffsetDateTime.now();
 
-    @Test
-    void getUserByUsername_ShouldReturnUser_WhenUserExists() {
-        // Arrange
-        UserDto expectedUser = new UserDto();
-        expectedUser.setId(testUserId);
-        expectedUser.setUsername(testUsername);
-        expectedUser.setEmail(testEmail);
-        expectedUser.setCreatedAt(testCreatedAt);
-        when(userApplicationService.findUserByUsername(testUsername))
-                .thenReturn(Optional.of(expectedUser));
+  @Test
+  void getUserByUsername_ShouldReturnUser_WhenUserExists() {
+    // Arrange
+    UserDto expectedUser = new UserDto();
+    Long testUserId = 1L;
+    expectedUser.setId(testUserId);
+    expectedUser.setUsername(testUsername);
+    String testEmail = "test@example.com";
+    expectedUser.setEmail(testEmail);
+    expectedUser.setCreatedAt(testCreatedAt);
+    when(userApplicationService.findUserByUsername(testUsername))
+            .thenReturn(Optional.of(expectedUser));
 
-        // Act
-        ResponseEntity<UserDto> response = userController.getUserByUsername(testUsername);
+    // Act
+    ResponseEntity<UserDto> response = userController.getUserByUsername(testUsername);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.hasBody());
-        assertEquals(expectedUser, response.getBody());
-        verify(userApplicationService).findUserByUsername(testUsername);
-    }
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(response.hasBody());
+    assertEquals(expectedUser, response.getBody());
+    verify(userApplicationService).findUserByUsername(testUsername);
+  }
 
-    @Test
-    void getUserByUsername_ShouldReturnNotFound_WhenUserDoesNotExist() {
-        // Arrange
-        when(userApplicationService.findUserByUsername(testUsername))
-                .thenReturn(Optional.empty());
+  @Test
+  void getUserByUsername_ShouldReturnNotFound_WhenUserDoesNotExist() {
+    // Arrange
+    when(userApplicationService.findUserByUsername(testUsername))
+            .thenReturn(Optional.empty());
 
-        // Act
-        ResponseEntity<UserDto> response = userController.getUserByUsername(testUsername);
+    // Act
+    ResponseEntity<UserDto> response = userController.getUserByUsername(testUsername);
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertFalse(response.hasBody());
-        verify(userApplicationService).findUserByUsername(testUsername);
-    }
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertFalse(response.hasBody());
+    verify(userApplicationService).findUserByUsername(testUsername);
+  }
 
-    @Test
-    void checkUsernameAvailability_ShouldReturnTrue_WhenUsernameIsAvailable() {
-        // Arrange
-        when(userApplicationService.isUsernameAvailable(testUsername))
-                .thenReturn(true);
+  @Test
+  void checkUsernameAvailability_ShouldReturnTrue_WhenUsernameIsAvailable() {
+    // Arrange
+    when(userApplicationService.isUsernameAvailable(testUsername))
+            .thenReturn(true);
 
-        // Act
-        ResponseEntity<Boolean> response = userController.checkUsernameAvailability(testUsername);
+    // Act
+    ResponseEntity<Boolean> response = userController.checkUsernameAvailability(testUsername);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.hasBody());
-        assertEquals(Boolean.TRUE, response.getBody());
-        verify(userApplicationService).isUsernameAvailable(testUsername);
-    }
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(response.hasBody());
+    assertEquals(Boolean.TRUE, response.getBody());
+    verify(userApplicationService).isUsernameAvailable(testUsername);
+  }
 
-    @Test
-    void checkUsernameAvailability_ShouldReturnFalse_WhenUsernameIsTaken() {
-        // Arrange
-        when(userApplicationService.isUsernameAvailable(testUsername))
-                .thenReturn(false);
+  @Test
+  void checkUsernameAvailability_ShouldReturnFalse_WhenUsernameIsTaken() {
+    // Arrange
+    when(userApplicationService.isUsernameAvailable(testUsername))
+            .thenReturn(false);
 
-        // Act
-        ResponseEntity<Boolean> response = userController.checkUsernameAvailability(testUsername);
+    // Act
+    ResponseEntity<Boolean> response = userController.checkUsernameAvailability(testUsername);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.hasBody());
-        assertEquals(Boolean.FALSE, response.getBody());
-        verify(userApplicationService).isUsernameAvailable(testUsername);
-    }
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(response.hasBody());
+    assertEquals(Boolean.FALSE, response.getBody());
+    verify(userApplicationService).isUsernameAvailable(testUsername);
+  }
 
-    @Test
-    void checkUsernameAvailability_ShouldHandleEmptyUsername() {
-        // Arrange
-        String emptyUsername = "";
-        when(userApplicationService.isUsernameAvailable(emptyUsername))
-                .thenReturn(true);
+  @Test
+  void checkUsernameAvailability_ShouldHandleEmptyUsername() {
+    // Arrange
+    String emptyUsername = "";
+    when(userApplicationService.isUsernameAvailable(emptyUsername))
+            .thenReturn(true);
 
-        // Act
-        ResponseEntity<Boolean> response = userController.checkUsernameAvailability(emptyUsername);
+    // Act
+    ResponseEntity<Boolean> response = userController.checkUsernameAvailability(emptyUsername);
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.hasBody());
-        assertEquals(Boolean.TRUE, response.getBody());
-        verify(userApplicationService).isUsernameAvailable(emptyUsername);
-    }
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(response.hasBody());
+    assertEquals(Boolean.TRUE, response.getBody());
+    verify(userApplicationService).isUsernameAvailable(emptyUsername);
+  }
 }

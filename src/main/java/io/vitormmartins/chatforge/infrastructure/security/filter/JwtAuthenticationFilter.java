@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends AbstractJwtFilter {
         String authHeader = request.getHeader("Authorization");
         var cookieToken = extractTokenFromCookies(request);
 
-        if (cookieToken.isEmpty() || authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (cookieToken.isPresent() || authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,4 +1,4 @@
-package io.vitormmartins.chatforge;
+package io.vitormmartins.chatforge.infrastructure.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

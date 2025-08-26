@@ -95,7 +95,7 @@ class AuthControllerTest {
     @Valid RegisterRequest request = new RegisterRequest(testUsername, testEmail, testPassword);
 
     UserDto expectedUserDto = new UserDto();
-    expectedUserDto.setId(1);
+    expectedUserDto.setId(1L);
     expectedUserDto.setUsername(testUsername);
     expectedUserDto.setEmail(testEmail);
     expectedUserDto.setCreatedAt(OffsetDateTime.now());

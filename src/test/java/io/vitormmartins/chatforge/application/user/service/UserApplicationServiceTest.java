@@ -1,11 +1,13 @@
 package io.vitormmartins.chatforge.application.user.service;
 
+import io.jsonwebtoken.security.Password; // TODO: insert this class
 import io.vitormmartins.chatforge.application.user.dto.AuthenticateUserCommand;
 import io.vitormmartins.chatforge.application.user.dto.RegisterUserCommand;
 import io.vitormmartins.chatforge.domain.user.model.*;
 import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import io.vitormmartins.chatforge.domain.user.service.UserDomainService;
 import io.vitormmartins.chatforge.generated.model.UserDto;
+import jakarta.validation.constraints.Email; // TODO: insert this class
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,19 +44,25 @@ class UserApplicationServiceTest {
 
     // Create a fake User instance with stubbing for mapping
     User dummyUser = mock(User.class);
-    // Properly mock UserId instead of casting
-    UserId dummyId = mock(UserId.class);
-    when(dummyId.value()).thenReturn(1L);
-    when(dummyUser.getId()).thenReturn(dummyId);
+    // Properly mock Long instead of casting
+    Long dummyId = 1L;
+    when(dummyUser.getId()).thenReturn(dummyId.describeConstable());
 
-    when(dummyUser.getUsername()).thenReturn(new Username("user"));
-    when(dummyUser.getEmail()).thenReturn(new Email("user@example.com"));
-    OffsetDateTime fixedDate = OffsetDateTime.of(2025, 7, 23, 21, 28, 55, 0, ZoneOffset.UTC);
+    when(dummyUser.getUsername()).thenReturn("user");
+    when(dummyUser.getEmail()).thenReturn("user@example.com");
+    OffsetDateTime fixedDate = OffsetDateTime.of( 2025,
+                                                  7,
+                                                  23,
+                                                  21,
+                                                  28,
+                                                  55,
+                                                  0,
+                                                  ZoneOffset.UTC);
     when(dummyUser.getCreatedAt()).thenReturn(fixedDate.toLocalDateTime());
     when(userDomainService.createUser(
-            ArgumentMatchers.any(Username.class),
+            ArgumentMatchers.any(String.class),
             ArgumentMatchers.any(),
-            ArgumentMatchers.any(Password.class))
+            ArgumentMatchers.any(String.class))
     ).thenReturn(dummyUser);
 
     // Act
@@ -75,22 +83,26 @@ class UserApplicationServiceTest {
     AuthenticateUserCommand command = new AuthenticateUserCommand("user", "pass");
     User dummyUser = mock(User.class);
 
-    // Properly mock UserId instead of casting
-    UserId dummyId = mock(UserId.class);
-    when(dummyId.value()).thenReturn(2L);
-    when(dummyUser.getId()).thenReturn(dummyId);
+    // Properly mock Long instead of casting
+    Long dummyId = 2L;
+    when(dummyUser.getId()).thenReturn(dummyId.describeConstable());
 
-    when(dummyUser.getUsername()).thenReturn(new Username("user"));
-    when(dummyUser.getEmail()).thenReturn(new Email("user@example.com"));
-    OffsetDateTime fixedDate = OffsetDateTime.of(2025, 7, 24, 10, 0, 0, 0, ZoneOffset.UTC);
+    when(dummyUser.getUsername()).thenReturn("user");
+    when(dummyUser.getEmail()).thenReturn("user@example.com");
+    OffsetDateTime fixedDate = OffsetDateTime.of( 2025,
+                                                  7,
+                                                  24,
+                                                  10,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                  ZoneOffset.UTC);
     when(dummyUser.getCreatedAt()).thenReturn(fixedDate.toLocalDateTime());
     // Stub password checking
-    // Simulate that user's password encoded value is "encodedPass"
-    Password dummyPassword = Password.fromEncoded("encodedPass");
+    // Simulates that a user's password encoded value is "encodedPass"
     // To simulate, we assume dummyUser.getPassword() returns dummyPassword.
-    when(dummyUser.getPassword()).thenReturn(dummyPassword);
-    when(userRepository.findByUsername(any(Username.class))).thenReturn(Optional.of(dummyUser));
-    when(passwordEncoder.matches("pass", dummyPassword.encodedValue())).thenReturn(true);
+    when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(dummyUser));
+    when(passwordEncoder.matches(eq("pass"), any())).thenReturn(true);
 
     // Act
     Optional<UserDto> resultOpt = service.authenticateUser(command);
@@ -111,19 +123,16 @@ class UserApplicationServiceTest {
     AuthenticateUserCommand command = new AuthenticateUserCommand("user", "wrongpass");
     User dummyUser = mock(User.class);
 
-    // Properly mock UserId instead of casting
-    UserId dummyId = mock(UserId.class);
-    when(dummyId.value()).thenReturn(3L);
-    when(dummyUser.getId()).thenReturn(dummyId);
+    // Properly mock Long instead of casting
+    Long dummyId = 3L;
+    when(dummyUser.getId()).thenReturn(dummyId.describeConstable());
 
-    when(dummyUser.getUsername()).thenReturn(new Username("user"));
-    when(dummyUser.getEmail()).thenReturn(new Email("user@example.com"));
+    when(dummyUser.getUsername()).thenReturn("user");
+    when(dummyUser.getEmail()).thenReturn("user@example.com");
     OffsetDateTime fixedDate = OffsetDateTime.now(ZoneOffset.UTC);
     when(dummyUser.getCreatedAt()).thenReturn(fixedDate.toLocalDateTime());
-    Password dummyPassword = Password.fromEncoded("encodedPass");
-    when(dummyUser.getPassword()).thenReturn(dummyPassword);
-    when(userRepository.findByUsername(any(Username.class))).thenReturn(Optional.of(dummyUser));
-    when(passwordEncoder.matches("wrongpass", dummyPassword.encodedValue())).thenReturn(false);
+    when(dummyUser.getPassword()).thenReturn("pass");
+    when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(dummyUser));
 
     // Act
     Optional<UserDto> resultOpt = service.authenticateUser(command);
@@ -139,16 +148,15 @@ class UserApplicationServiceTest {
     String usernameStr = "user";
     User dummyUser = mock(User.class);
 
-    // Properly mock UserId instead of casting
-    UserId dummyId = mock(UserId.class);
-    when(dummyId.value()).thenReturn(4L);
-    when(dummyUser.getId()).thenReturn(dummyId);
+    // Properly mock Long instead of casting
+    Long dummyId = 4L;
+    when(dummyUser.getId()).thenReturn(dummyId.describeConstable());
 
-    when(dummyUser.getUsername()).thenReturn(new Username("user"));
-    when(dummyUser.getEmail()).thenReturn(new Email("user@example.com"));
+    when(dummyUser.getUsername()).thenReturn("user");
+    when(dummyUser.getEmail()).thenReturn("user@example.com");
     OffsetDateTime fixedDate = OffsetDateTime.of(2025, 8, 1, 12, 0, 0, 0, ZoneOffset.UTC);
     when(dummyUser.getCreatedAt()).thenReturn(fixedDate.toLocalDateTime());
-    when(userRepository.findByUsername(any(Username.class))).thenReturn(Optional.of(dummyUser));
+    when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(dummyUser));
 
     // Act
     Optional<UserDto> resultOpt = service.findUserByUsername(usernameStr);
@@ -166,7 +174,7 @@ class UserApplicationServiceTest {
   @DisplayName("findUserByUsername: Non-existing user returns empty")
   void testFindUserByUsernameNotFound() {
     // Arrange
-    when(userRepository.findByUsername(any(Username.class))).thenReturn(Optional.empty());
+    when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.empty());
 
     // Act
     Optional<UserDto> resultOpt = service.findUserByUsername("nonexistent");
@@ -179,7 +187,7 @@ class UserApplicationServiceTest {
   @DisplayName("isUsernameAvailable: Available username returns true")
   void testIsUsernameAvailableTrue() {
     // Arrange
-    when(userDomainService.isUsernameAvailable(any(Username.class))).thenReturn(true);
+    when(userDomainService.isUsernameAvailable(any(String.class))).thenReturn(true);
 
     // Act
     boolean available = service.isUsernameAvailable("availableUser");
@@ -192,7 +200,7 @@ class UserApplicationServiceTest {
   @DisplayName("isUsernameAvailable: Unavailable username returns false")
   void testIsUsernameAvailableFalse() {
     // Arrange
-    when(userDomainService.isUsernameAvailable(any(Username.class))).thenReturn(false);
+    when(userDomainService.isUsernameAvailable(any(String.class))).thenReturn(false);
 
     // Act
     boolean available = service.isUsernameAvailable("takenUser");

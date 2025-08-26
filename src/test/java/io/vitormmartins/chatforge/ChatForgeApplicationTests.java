@@ -67,7 +67,7 @@ class ChatForgeApplicationTests {
     private final String testUsername = "Capivara";
     private final String testPassword = "aravipac";
     private final String testEmail = "capivara@example.com";
-    private final Integer testUserId = 11;
+    private final Long testUserId = 11L;
     private final LocalDateTime testCreatedAt = LocalDateTime.now();
 
     @BeforeEach

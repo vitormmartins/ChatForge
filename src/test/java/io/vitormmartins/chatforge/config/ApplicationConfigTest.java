@@ -3,8 +3,6 @@ package io.vitormmartins.chatforge.config;
 import io.vitormmartins.chatforge.application.user.service.PasswordEncoderPort;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.domain.user.model.User;
-import io.vitormmartins.chatforge.domain.user.model.UserId;
-import io.vitormmartins.chatforge.domain.user.model.Username;
 import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import io.vitormmartins.chatforge.domain.user.service.UserDomainService;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +34,7 @@ class ApplicationConfigTest {
        * @return optional user if found
        */
       @Override
-      public Optional<User> findById(UserId id) {
+      public Optional<User> findById(long id) {
         return Optional.empty();
       }
 
@@ -47,7 +45,7 @@ class ApplicationConfigTest {
        * @return optional user if found
        */
       @Override
-      public Optional<User> findByUsername(Username username) {
+      public Optional<User> findByUsername(String username) {
         return Optional.empty();
       }
 
@@ -58,7 +56,7 @@ class ApplicationConfigTest {
        * @return true if a username exists, false otherwise
        */
       @Override
-      public boolean existsByUsername(Username username) {
+      public boolean existsByUsername(String username) {
         return false;
       }
 
@@ -68,9 +66,11 @@ class ApplicationConfigTest {
        * @param id the user ID to delete
        */
       @Override
-      public void deleteById(UserId id) {
-        // TODO document why this method is empty
+      public void deleteById(long id) {
+      // Empty, only for tests purpose
       }
+
+
     }
 
     // Fake implementation for PasswordEncoderPort.

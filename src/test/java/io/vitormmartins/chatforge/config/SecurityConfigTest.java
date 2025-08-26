@@ -14,6 +14,8 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -31,7 +33,7 @@ class SecurityConfigTest {
     private JwtUtil createMockJwtUtil() {
         JwtUtil jwtUtil = new JwtUtil();
         try {
-            java.lang.reflect.Field secretKeyField = JwtUtil.class.getDeclaredField("secretKeyString");
+            Field secretKeyField = JwtUtil.class.getDeclaredField("secretKeyString");
             secretKeyField.setAccessible(true);
             secretKeyField.set(jwtUtil, "OBslwXQbeJPMIq2bNCmAADfBF36Tda8BhRrXebM8zG2P2ksGSCol9f9bDZpVH6gn");
             jwtUtil.init();

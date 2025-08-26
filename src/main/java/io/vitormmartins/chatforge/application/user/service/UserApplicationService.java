@@ -43,8 +43,9 @@ public record UserApplicationService(UserRepository userRepository,
    */
   public Optional<UserDto> authenticateUser(AuthenticateUserCommand command) {
     return userRepository.findByUsername(command.username())
-            .filter(user -> passwordEncoder.matches(command.rawPassword(), user.getPassword()))
-            .map(this::mapToDto);
+                         .filter(user -> passwordEncoder.matches(command.rawPassword(),
+                                                                       user.getPassword()))
+                         .map(this::mapToDto);
   }
 
   /**
