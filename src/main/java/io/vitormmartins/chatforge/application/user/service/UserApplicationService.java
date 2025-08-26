@@ -1,0 +1,74 @@
+package io.vitormmartins.chatforge.application.user.service;
+
+import io.vitormmartins.chatforge.application.user.dto.AuthenticateUserCommand;
+import io.vitormmartins.chatforge.application.user.dto.RegisterUserCommand;
+import io.vitormmartins.chatforge.domain.user.model.*;
+import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
+import io.vitormmartins.chatforge.domain.user.service.UserDomainService;
+import io.vitormmartins.chatforge.generated.model.UserDto;
+
+import java.time.ZoneOffset;
+import java.util.Optional;
+
+/**
+ * Application service for user management use cases.
+ * Orchestrates domain objects and coordinates with infrastructure.
+ */
+public record UserApplicationService(UserRepository userRepository,
+                                     UserDomainService userDomainService,
+                                     PasswordEncoderPort passwordEncoder
+) {
+
+  /**
+   * Registers a new user in the system.
+   */
+  public UserDto registerUser(RegisterUserCommand command) {
+    // Encode password using infrastructure service
+    String encodedPassword = passwordEncoder.encode(command.rawPassword());
+
+    // Create domain value objects
+    String username = command.username();
+    String email = command.email();
+    String password = encodedPassword;
+
+    // Use domain service to create a user
+    User createdUser = userDomainService.createUser(username, email, password);
+
+    // Convert to DTO
+    return mapToDto(createdUser);
+  }
+
+  /**
+   * Authenticates a user with a username and password.
+   */
+  public Optional<UserDto> authenticateUser(AuthenticateUserCommand command) {
+    return userRepository.findByUsername(command.username())
+                         .filter(user -> passwordEncoder.matches(command.rawPassword(),
+                                                                       user.getPassword()))
+                         .map(this::mapToDto);
+  }
+
+  /**
+   * Finds a user by username.
+   */
+  public Optional<UserDto> findUserByUsername(String username) {
+    return userRepository.findByUsername(username)
+            .map(this::mapToDto);
+  }
+
+  /**
+   * Checks if a username is available for registration.
+   */
+  public boolean isUsernameAvailable(String username) {
+    return userDomainService.isUsernameAvailable(username);
+  }
+
+  private UserDto mapToDto(User user) {
+    UserDto userDto = new UserDto();
+    userDto.setId(user.getId().orElse(0L));
+    userDto.setUsername(user.getUsername());
+    userDto.setEmail(user.getEmail());
+    userDto.setCreatedAt(user.getCreatedAt().atOffset(ZoneOffset.UTC));
+    return userDto;
+  }
+}
