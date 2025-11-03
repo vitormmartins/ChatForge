@@ -1,14 +1,13 @@
-package io.vitormmartins.chatforge.application.user.dto;
+package io.vitormmartins.chatforge.application.user.command;
 
 /**
- * Command for a user registration use case.
+ * Command for user authentication use case.
  */
-public record RegisterUserCommand(
+public record AuthenticateUserCommand(
     String username,
-    String email,
     String rawPassword
 ) {
-    public RegisterUserCommand {
+    public AuthenticateUserCommand {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username is required");
         }

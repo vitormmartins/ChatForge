@@ -3,7 +3,9 @@ package io.vitormmartins.chatforge.domain.user.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import io.vitormmartins.chatforge.domain.user.model.Email;
 import io.vitormmartins.chatforge.domain.user.model.User;
+import io.vitormmartins.chatforge.domain.user.model.Username;
 import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 
 /**
@@ -24,21 +26,21 @@ public class UserDomainService {
      * @param email the user's email (optional)
      * @param password the encoded password
      * @return the created user
-     * @throws IllegalArgumentException if username already exists
+     * @throws IllegalArgumentException if a username already exists
      */
-    public User createUser(String username, String email, String password) {
-        if (userRepository.existsByUsername(username)) {
+    public User createUser(Username username, Email email, String password) {
+        if (userRepository.existsByUsername(username.value())) {
             throw new IllegalArgumentException("Username already exists: " + username);
         }
         
-        User user = new User(Optional.empty(), username, email, password, LocalDateTime.now());
+        User user = new User(Optional.empty(), username, email, password, LocalDateTime.now(), LocalDateTime.now());
         return userRepository.save(user);
     }
     
     /**
      * Checks if a user can be created with the given username.
      * @param username the username to check
-     * @return true if username is available
+     * @return true if a username is available
      */
     public boolean isUsernameAvailable(String username) {
         return !userRepository.existsByUsername(username);

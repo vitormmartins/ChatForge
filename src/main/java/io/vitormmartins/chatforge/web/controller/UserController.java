@@ -1,5 +1,6 @@
 package io.vitormmartins.chatforge.web.controller;
 
+import io.vitormmartins.chatforge.application.user.dto.UserResponse;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +32,26 @@ public class UserController {
      * Retrieves a user by their username.
      *
      * @param username the username of the user to retrieve
-     * @return a `ResponseEntity` containing the `UserDto` if found, or a 404 Not Found response
+     * @return a `ResponseEntity` containing the `UserResponse` if found, or a 404 Not Found response
      */
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
-        Optional<UserDto> user = userApplicationService.findUserByUsername(username);
-        return user.map(ResponseEntity::ok)
-                  .orElse(ResponseEntity.notFound().build());
+        Optional<UserResponse> response = userApplicationService.findUserByUsername(username);
+        Optional<UserDto> user = response.map(r -> {
+          UserDto dto = new UserDto();
+          dto.setId(r.id());
+          dto.setUsername(r.username());
+          dto.setEmail(r.email());
+
+          if (r.createdAt() != null) {
+            dto.setCreatedAt(r.createdAt().atOffset(java.time.ZoneOffset.systemDefault()
+                    .getRules()
+                    .getOffset(r.createdAt())));
+          }
+          return dto;
+      });
+      return user.map(ResponseEntity::ok)
+              .orElse(ResponseEntity.notFound().build());
     }
     
     /**

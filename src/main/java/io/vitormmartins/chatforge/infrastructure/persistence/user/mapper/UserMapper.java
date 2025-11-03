@@ -20,11 +20,11 @@ public class UserMapper {
      */
     public static UserJpaEntity toJpaEntity(User domainUser) {
         return new UserJpaEntity(
-            domainUser.getUsername(),
-            domainUser.getPassword(),
-            domainUser.getEmail() != null ? domainUser.getEmail() : null,
-            domainUser.getCreatedAt(),
-            domainUser.getUpdatedAt()
+            domainUser.username().value(),
+            domainUser.password(),
+            domainUser.email() != null ? domainUser.email().value() : null,
+            domainUser.createdAt(),
+            domainUser.updatedAt()
         );
     }
     
@@ -34,19 +34,20 @@ public class UserMapper {
     public static User toDomainEntity(UserJpaEntity jpaEntity) {        
         return new User(
             Optional.of(jpaEntity.getId()),
-            jpaEntity.getUsername(),
-            jpaEntity.getEmail(),
+            new Username(jpaEntity.getUsername()),
+            new Email(jpaEntity.getEmail()),
             jpaEntity.getPassword(),
-            jpaEntity.getCreatedAt());
+            jpaEntity.getCreatedAt(),
+            jpaEntity.getUpdatedAt());
     }
     
     /**
      * Updates JPA entity with data from domain User (for updates).
      */
     public static void updateJpaEntity(UserJpaEntity jpaEntity, User domainUser) {
-        jpaEntity.setUsername(domainUser.getUsername());
-        jpaEntity.setPassword(domainUser.getPassword());
-        jpaEntity.setEmail(domainUser.getEmail());
-        jpaEntity.setUpdatedAt(domainUser.getUpdatedAt());
+        jpaEntity.setUsername(domainUser.username().value());
+        jpaEntity.setPassword(domainUser.password());
+        jpaEntity.setEmail(domainUser.email().value());
+        jpaEntity.setUpdatedAt(domainUser.updatedAt());
     }
 }

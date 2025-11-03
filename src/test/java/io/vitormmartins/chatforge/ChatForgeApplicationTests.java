@@ -1,11 +1,11 @@
 package io.vitormmartins.chatforge;
 
+import io.vitormmartins.chatforge.application.user.dto.UserResponse;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.config.TestSecurityConfig;
 import io.vitormmartins.chatforge.config.TestJwtConfig;
 import io.vitormmartins.chatforge.config.TestMongoConfig;
 import io.vitormmartins.chatforge.config.TestSecurityComponentsConfig;
-import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -88,12 +87,14 @@ class ChatForgeApplicationTests {
     @Test
     void getUser_ShouldReturnUser_WhenUserExists() throws Exception {
         // Arrange
-        UserDto userDto = new UserDto();
-        userDto.setId(testUserId);
-        userDto.setUsername(testUsername);
-        userDto.setEmail(testEmail);
-        userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
-        when(userApplicationService.findUserByUsername(testUsername)).thenReturn(Optional.of(userDto));
+        UserResponse userResponse = new UserResponse(
+                testUserId,
+                testUsername,
+                testEmail,
+                testCreatedAt
+        );
+      when(userApplicationService.findUserByUsername(testUsername)).thenReturn(Optional.of(userResponse));
+
 
         // Act & Assert
         mockMvc.perform(get("/v1/api/users/{username}", testUsername)
@@ -118,14 +119,16 @@ class ChatForgeApplicationTests {
     @Test
     void login_ShouldReturnJwtToken_WhenCredentialsAreValid() throws Exception {
         // Arrange
-        UserDto userDto = new UserDto();
-        userDto.setId(testUserId);
-        userDto.setUsername(testUsername);
-        userDto.setEmail(testEmail);
-     userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
+        UserResponse userResponse = new UserResponse(
+                testUserId,
+                testUsername,
+                testEmail,
+                testCreatedAt
+        );
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
-        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userDto));
+        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userResponse));
 
         // Act & Assert
         mockMvc.perform(post("/v1/auth/login")
@@ -143,14 +146,15 @@ class ChatForgeApplicationTests {
     @Test
     void loginWithCookie_ShouldSetAuthCookie_WhenCredentialsAreValid() throws Exception {
         // Arrange
-        UserDto userDto = new UserDto();
-        userDto.setId(testUserId);
-        userDto.setUsername(testUsername);
-        userDto.setEmail(testEmail);
-    userDto.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
+      UserResponse userResponse = new UserResponse(
+              testUserId,
+              testUsername,
+              testEmail,
+              testCreatedAt
+      );
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(testUsername, testPassword));
-        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userDto));
+        when(userApplicationService.authenticateUser(any())).thenReturn(Optional.of(userResponse));
 
         // Act & Assert
         mockMvc.perform(post("/v1/auth/login-cookie")
@@ -169,12 +173,13 @@ class ChatForgeApplicationTests {
     @Test
     void registerUser_ShouldReturnUserDto_WhenRegistrationIsSuccessful() throws Exception {
         // Arrange
-        UserDto expectedUser = new UserDto();
-        expectedUser.setId(testUserId);
-        expectedUser.setUsername(testUsername);
-        expectedUser.setEmail(testEmail);
-        expectedUser.setCreatedAt(testCreatedAt.atOffset(ZoneOffset.UTC));
-        when(userApplicationService.registerUser(any())).thenReturn(expectedUser);
+      UserResponse userResponse = new UserResponse(
+              testUserId,
+              testUsername,
+              testEmail,
+              testCreatedAt
+      );
+        when(userApplicationService.registerUser(any())).thenReturn(userResponse);
 
         // Act & Assert
         mockMvc.perform(post("/v1/auth/register")

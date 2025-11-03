@@ -1,5 +1,6 @@
 package io.vitormmartins.chatforge.web.controller;
 
+import io.vitormmartins.chatforge.application.user.dto.UserResponse;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.generated.model.LoginRequest;
 import io.vitormmartins.chatforge.generated.model.RegisterRequest;
@@ -18,7 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -94,13 +95,20 @@ class AuthControllerTest {
     String testEmail = "test@example.com";
     @Valid RegisterRequest request = new RegisterRequest(testUsername, testEmail, testPassword);
 
+    UserResponse userResponse = new UserResponse( 1L,
+                                                  testUsername,
+                                                  testEmail,
+            LocalDateTime.of(2024, 1, 1, 12, 0));
+    when(userApplicationService.registerUser(any())).thenReturn(userResponse);
+
     UserDto expectedUserDto = new UserDto();
     expectedUserDto.setId(1L);
     expectedUserDto.setUsername(testUsername);
     expectedUserDto.setEmail(testEmail);
-    expectedUserDto.setCreatedAt(OffsetDateTime.now());
-
-    when(userApplicationService.registerUser(any())).thenReturn(expectedUserDto);
+    expectedUserDto.setCreatedAt(userResponse.createdAt()
+                                             .atOffset(java.time.ZoneOffset.systemDefault()
+                                                                           .getRules()
+                                                                           .getOffset(userResponse.createdAt())));
 
     // Act
     ResponseEntity<UserDto> response = authController.v1AuthRegisterPost(request);
