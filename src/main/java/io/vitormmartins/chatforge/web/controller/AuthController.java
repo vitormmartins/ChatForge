@@ -1,7 +1,8 @@
 package io.vitormmartins.chatforge.web.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.vitormmartins.chatforge.application.user.dto.RegisterUserCommand;
+import io.vitormmartins.chatforge.application.user.command.RegisterUserCommand;
+import io.vitormmartins.chatforge.application.user.dto.UserResponse;
 import io.vitormmartins.chatforge.generated.api.AuthenticationApi;
 import io.vitormmartins.chatforge.generated.model.LoginRequest;
 import io.vitormmartins.chatforge.generated.model.RegisterRequest;
@@ -56,8 +57,8 @@ public class AuthController implements AuthenticationApi {
                                               .path("/")
                                               .build();
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("Authentication successful");
+                             .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                             .body("Authentication successful");
     }
 
     @Override
@@ -68,8 +69,17 @@ public class AuthController implements AuthenticationApi {
                                                               registerRequest.getPassword()
         );
 
-        UserDto createdUser = userApplicationService.registerUser(command);
-        return ResponseEntity.ok(createdUser);
+        UserResponse createdUser = userApplicationService.registerUser(command);
+        UserDto userDto = new UserDto();
+        userDto.id(createdUser.id());
+        userDto.username(createdUser.username());
+        userDto.email(createdUser.email());
+        userDto.createdAt(createdUser.createdAt()
+                                     .atOffset(java.time.ZoneOffset.systemDefault()
+                                                                   .getRules()
+                                                                   .getOffset(createdUser.createdAt())));
+
+        return ResponseEntity.ok(userDto);
     }
 
     @Override

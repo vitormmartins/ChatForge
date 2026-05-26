@@ -5,15 +5,17 @@ import io.vitormmartins.chatforge.domain.user.repository.UserRepository;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.entity.UserJpaEntity;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.mapper.UserMapper;
 import io.vitormmartins.chatforge.infrastructure.persistence.user.repository.UserJpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 /**
- * Adapter that implements the UserRepository port using Spring Data JPA.
- * This bridges the domain layer with the persistence infrastructure.
+ * Adapter implementing UserRepository port using Spring Data JPA.
+ * Bridges domain layer with persistence infrastructure.
  */
-@Component
+@Repository
+@Transactional
 public class UserRepositoryAdapter implements UserRepository {
     
     private final UserJpaRepository jpaRepository;
@@ -24,36 +26,30 @@ public class UserRepositoryAdapter implements UserRepository {
     
     @Override
     public User save(User user) {
-        UserJpaEntity jpaEntity;
-        
-        if (!user.getId().isPresent()) {
-            // New user - convert to JPA entity
-            jpaEntity = UserMapper.toJpaEntity(user);
-        } else {
-            // Existing user - load and update
-            jpaEntity = jpaRepository.findById(user.getId().get())
-                                     .orElseThrow(() -> new IllegalArgumentException("User not found: "
-                                                                                     + user.getId()));
-            UserMapper.updateJpaEntity(jpaEntity, user);
-        }
+        UserJpaEntity jpaEntity = user.id().isPresent()
+            ? updateExistingEntity(user)
+            : createNewEntity(user);
         
         UserJpaEntity savedEntity = jpaRepository.save(jpaEntity);
         return UserMapper.toDomainEntity(savedEntity);
     }
     
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(long id) {
         return jpaRepository.findById(id)
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
         return jpaRepository.findByUsername(username)
             .map(UserMapper::toDomainEntity);
     }
     
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return jpaRepository.existsByUsername(username);
     }
@@ -61,5 +57,19 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public void deleteById(long id) {
         jpaRepository.deleteById(id);
+    }
+    
+    // Helper methods
+    private UserJpaEntity createNewEntity(User user) {
+        return UserMapper.toJpaEntity(user);
+    }
+    
+    private UserJpaEntity updateExistingEntity(User user) {
+        UserJpaEntity jpaEntity = jpaRepository.findById(user.id().get())
+            .orElseThrow(() -> new IllegalArgumentException(
+                "User not found for update: " + user.id().get()
+            ));
+        UserMapper.updateJpaEntity(jpaEntity, user);
+        return jpaEntity;
     }
 }

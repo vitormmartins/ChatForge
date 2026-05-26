@@ -1,5 +1,6 @@
 package io.vitormmartins.chatforge.application.user.dto;
 
+import io.vitormmartins.chatforge.application.user.command.RegisterUserCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

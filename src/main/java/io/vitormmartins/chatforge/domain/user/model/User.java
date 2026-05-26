@@ -1,60 +1,107 @@
 package io.vitormmartins.chatforge.domain.user.model;
 
-import lombok.Getter;
+import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- * User domain entity representing a user in the chat system.
- * This is the core domain model independent of any infrastructure concerns.
+ * User domain entity - immutable aggregate root.
+ * Represents a user in the chat system following DDD principles.
  */
-@Getter
-public class User {
-  private final Optional<Long> id;
-  private final String username;
-  private final String email;
-  private final String password;
-  private final LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-
-  public User(Optional<Long> id, String username, String email, String password) {
-    this(id, username, email, password, LocalDateTime.now());
+public record User(
+        Optional<Long> id,
+        Username username,
+        Email email,
+        String password,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
+) {
+  // Constructor for new users (without ID)
+  public User(Username username, Email email, String password) {
+    this(Optional.empty(), username, email, password, LocalDateTime.now(), LocalDateTime.now());
   }
 
-  public User(Optional<Long> id, String username, String email, String password, LocalDateTime createdAt) {
-    this.id = id;
-    this.username = Objects.requireNonNull(username, "Username cannot be null");
-    this.email = email;
-    this.password = Objects.requireNonNull(password, "Password cannot be null");
-    this.createdAt = Objects.requireNonNull(createdAt, "CreatedAt cannot be null");
-    this.updatedAt = createdAt;
+  // Compact canonical constructor for validation
+  public User {
+    validateUsername(username);
+    validatePassword(password);
+    Objects.requireNonNull(createdAt, "CreatedAt cannot be null");
+    Objects.requireNonNull(updatedAt, "UpdatedAt cannot be null");
+
   }
 
-  // Business methods
-  public void updatePassword(String newPassword) {
-    if (this.password.equals(newPassword)) {
+  public static User createNew(Username username, Email email, String password) {
+    User user = new User(username, email, password);
+    UserApplicationService.publishUserCreatedEvent(user); // Publish domain event
+    return user;
+  }
+
+  // Business methods returning new instances (immutability)
+  public User updatePassword(String newEncodedPassword) {
+    validatePassword(newEncodedPassword);
+    if (this.password.equals(newEncodedPassword)) {
       throw new IllegalArgumentException("New password must be different from current password");
     }
-    // Note: In real implementation, this would return a new instance (immutable)
-    this.updatedAt = LocalDateTime.now();
+    return new User(
+            this.id,
+            this.username,
+            this.email,
+            newEncodedPassword,
+            this.createdAt,
+            LocalDateTime.now()
+    );
   }
 
-  public boolean isValidPassword(String rawPassword) {
-    return password.matches(rawPassword);
+  public User updateEmail(Email newEmail) {
+    if (this.email != null && this.email.equals(newEmail)) {
+      throw new IllegalArgumentException("New email must be different from current email");
+    }
+    return new User(
+            this.id,
+            this.username,
+            newEmail,
+            this.password,
+            this.createdAt,
+            LocalDateTime.now()
+    );
   }
 
+  // Assign ID after persistence (for new users)
+  public User withId(Long id) {
+    if (this.id != null && this.id.isPresent()) {
+      throw new IllegalStateException("Cannot reassign ID to existing user");
+    }
+    return new User(Optional.ofNullable(id), this.username, this.email, this.password, this.createdAt, this.updatedAt);
+  }
+
+  // Domain validations
+  private void validateUsername(Username username) {
+    Objects.requireNonNull(username, "Username cannot be null");
+    if (username.value().trim().isEmpty()) {
+      throw new IllegalArgumentException("Username cannot be empty");
+    }
+    if (username.value().length() < 3 || username.value().length() > 50) {
+      throw new IllegalArgumentException("Username must be between 3 and 50 characters");
+    }
+  }
+
+  private void validatePassword(String password) {
+    Objects.requireNonNull(password, "Password cannot be null");
+    if (password.trim().isEmpty()) {
+      throw new IllegalArgumentException("Password cannot be empty");
+    }
+  }
+
+  @NotNull
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(id, user.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", email='" + email + '\'' +
+            '}';
   }
 }

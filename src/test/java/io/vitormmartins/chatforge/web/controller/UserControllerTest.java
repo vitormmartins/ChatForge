@@ -1,5 +1,6 @@
 package io.vitormmartins.chatforge.web.controller;
 
+import io.vitormmartins.chatforge.application.user.dto.UserResponse;
 import io.vitormmartins.chatforge.application.user.service.UserApplicationService;
 import io.vitormmartins.chatforge.generated.model.UserDto;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -27,11 +29,22 @@ class UserControllerTest {
   private UserController userController;
 
   private final String testUsername = "testuser";
-  private final OffsetDateTime testCreatedAt = OffsetDateTime.now();
+  private final LocalDateTime testLocalCreatedAt = LocalDateTime.now();
+  private final OffsetDateTime testCreatedAt = testLocalCreatedAt.atOffset(java.time.ZoneOffset.systemDefault()
+                                                                           .getRules()
+                                                                           .getOffset(testLocalCreatedAt));
 
   @Test
   void getUserByUsername_ShouldReturnUser_WhenUserExists() {
     // Arrange
+    UserResponse userResponse = new UserResponse(1L,
+            testUsername,
+            "test@example.com",
+            testLocalCreatedAt);
+
+    when(userApplicationService.findUserByUsername(testUsername))
+            .thenReturn(Optional.of(userResponse));
+
     UserDto expectedUser = new UserDto();
     Long testUserId = 1L;
     expectedUser.setId(testUserId);
@@ -39,8 +52,7 @@ class UserControllerTest {
     String testEmail = "test@example.com";
     expectedUser.setEmail(testEmail);
     expectedUser.setCreatedAt(testCreatedAt);
-    when(userApplicationService.findUserByUsername(testUsername))
-            .thenReturn(Optional.of(expectedUser));
+
 
     // Act
     ResponseEntity<UserDto> response = userController.getUserByUsername(testUsername);
